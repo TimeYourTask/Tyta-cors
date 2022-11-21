@@ -1,7 +1,7 @@
 version: '3.8'
 services:
   node:
-    container_name: TYTA_CORS
+    container_name: tyta_node
     image: 'node:latest'
     working_dir: /home/node/app
     env_file:
@@ -19,7 +19,7 @@ services:
     networks:
       - mongodb
   mongo:
-    container_name: project_api_mongo
+    container_name: tyta_mongo
     image: mongo
     ports:
       - "27017:27017"
