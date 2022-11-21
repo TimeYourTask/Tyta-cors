@@ -24,3 +24,5 @@ let userSchema = new Schema({
     default: "ROLE_USER",
   },
 });
+
+module.exports = mongoose.model("User", userSchema);
