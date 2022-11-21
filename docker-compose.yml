@@ -1,0 +1,30 @@
+version: '3.8'
+services:
+  node:
+    container_name: tyta_node
+    image: 'node:latest'
+    working_dir: /home/node/app
+    env_file:
+      - .env
+    command:
+      - /bin/sh
+      - '-c'
+      - 'npm install && npm start'
+    ports:
+      - '3001:3000'
+    volumes:
+      - './:/home/node/app'
+    links:
+      - mongo
+    networks:
+      - mongodb
+  mongo:
+    container_name: tyta_mongo
+    image: mongo
+    ports:
+      - "27017:27017"
+    networks:
+      - mongodb
+networks:
+  mongodb:
+    driver: bridge
