@@ -5,4 +5,5 @@ module.exports = (app) => {
   app.get("/users", userCtrl.getUsers);
   app.get("/user/:_id", userCtrl.getOneUser);
   app.delete("/user/:_id", userCtrl.deleteUser);
+  app.put("/user/:_id", userCtrl.updateUser);
 };
