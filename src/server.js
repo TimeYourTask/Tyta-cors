@@ -1,12 +1,13 @@
-//Create a basic express server
-const express = require("express");
-const app = express();
-const mongoose = require("mongoose");
+// Create a basic express server
 
+const express = require('express');
+const mongoose = require('mongoose');
+
+const app = express();
 const PORT = process.env.PORT;
 const DB = process.env.DB_URL;
 
-//Implement mongoose
+// Implement mongoose
 mongoose
   .connect(DB)
   .then(() => console.log("Connected to MongoDB successfully"))
