@@ -6,20 +6,20 @@ const Schema = mongoose.Schema;
 let userSchema = new Schema({
   email: {
     type: String,
-    require: true,
+    required: true,
     unique: true,
   },
   password: {
     type: String,
-    require: true,
+    required: true,
   },
   firstName: {
     type: String,
-    require: true,
+    required: true,
   },
   lastName: {
     type: String,
-    require: true,
+    required: true,
   },
   role: {
     type: String,
@@ -28,8 +28,11 @@ let userSchema = new Schema({
 });
 
 // Pre save to hash password
-userSchema.pre("save", (next) => {
-  let user = this;
+userSchema.pre("save", function preSave(next) {
+  const user = this;
+
+  if (!user.isModified("password")) return next();
+
   bcrypt
     .hash(user.password, 10)
     .then((hash) => {
