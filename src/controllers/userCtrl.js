@@ -19,3 +19,11 @@ exports.getOneUser = (req, res) => {
     .then((user) => res.status(200).json({ user }))
     .catch((error) => res.status(400).json({ error }));
 };
+
+exports.deleteUser = (req, res) => {
+  User.findByIdAndDelete(req.params._id)
+    .then(() => res.status(200).json({ message: "User deleted!" }))
+    .catch((error) =>
+      res.status(400).json({ message: "Invalid Request!", error })
+    );
+};

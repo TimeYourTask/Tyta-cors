@@ -4,4 +4,5 @@ module.exports = (app) => {
   app.post("/user/register", userCtrl.userRegister);
   app.get("/users", userCtrl.getUsers);
   app.get("/user/:_id", userCtrl.getOneUser);
+  app.delete("/user/:_id", userCtrl.deleteUser);
 };
