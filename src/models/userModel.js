@@ -21,22 +21,37 @@ const userSchema = new Schema({
   },
   role: {
     type: String,
+    default: 'user',
   },
 });
 
 // Pre save to hash password
-userSchema.pre('save', function preSave(next) {
+userSchema.pre('save', function (next) {
   const user = this;
 
   if (!user.isModified('password')) return next();
 
-  bcrypt
+  return bcrypt
     .hash(user.password, 10)
     .then((hash) => {
       user.password = hash;
       next();
     })
     .catch((error) => next(error));
+});
+
+userSchema.pre('findOneAndUpdate', function () {
+  const update = this.getUpdate();
+  if (update.password) {
+    return bcrypt
+      .hash(update.password, 10)
+      .then((hash) => {
+        update.password = hash;
+        this.setUpdate(update);
+      })
+      .catch((error) => error);
+  }
+  return true;
 });
 
 module.exports = mongoose.model('User', userSchema);

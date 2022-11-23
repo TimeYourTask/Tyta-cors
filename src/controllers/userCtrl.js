@@ -15,13 +15,13 @@ exports.getUsers = (req, res) => {
 };
 
 exports.getOneUser = (req, res) => {
-  User.findOne({ _id: req.params._id })
+  User.findById(req.params.userId)
     .then((user) => res.status(200).json({ user }))
     .catch((error) => res.status(400).json({ error }));
 };
 
 exports.deleteUser = (req, res) => {
-  User.findByIdAndDelete(req.params._id)
+  User.findByIdAndDelete(req.params.userId)
     .then(() => res.status(200).json({ message: 'User deleted!' }))
     .catch((error) =>
       res.status(400).json({ message: 'Invalid Request!', error })
@@ -29,7 +29,10 @@ exports.deleteUser = (req, res) => {
 };
 
 exports.updateUser = (req, res) => {
-  User.findByIdAndUpdate(req.params._id, req.body, { new: true, upsert: true })
+  User.findByIdAndUpdate(req.params.userId, req.body, {
+    new: true,
+    upsert: true,
+  })
     .then((user) => {
       res
         .status(200)
