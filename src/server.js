@@ -4,20 +4,20 @@ const express = require('express');
 const mongoose = require('mongoose');
 
 const app = express();
-const PORT = process.env.PORT;
+const PORT = process.env.SERVER_PORT;
 const DB = process.env.DB_URL;
 
 // Implement mongoose
 mongoose
   .connect(DB)
-  .then(() => console.log("Connected to MongoDB successfully"))
-  .catch((err) => console.log("Could not connect to MongoDB", err));
+  .then(() => console.log('Connected to MongoDB successfully'))
+  .catch((err) => console.log('Could not connect to MongoDB', err));
 
 app.use(express.urlencoded());
 app.use(express.json());
 
 // Use route in folder routes
-const userRoute = require("./routes/userRoute");
+const userRoute = require('./routes/userRoute');
 userRoute(app);
 
 //Start the server
