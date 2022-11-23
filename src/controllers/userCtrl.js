@@ -1,10 +1,10 @@
-const User = require("../models/userModel");
+const User = require('../models/userModel');
 
 exports.userRegister = (req, res) => {
-  let newUser = new User(req.body);
+  const newUser = new User(req.body);
   newUser
     .save()
-    .then(() => res.status(201).json({ message: "User Created! :", newUser }))
+    .then(() => res.status(201).json({ message: 'User Created! :', newUser }))
     .catch((error) => res.status(500).json({ error }));
 };
 
@@ -22,9 +22,9 @@ exports.getOneUser = (req, res) => {
 
 exports.deleteUser = (req, res) => {
   User.findByIdAndDelete(req.params._id)
-    .then(() => res.status(200).json({ message: "User deleted!" }))
+    .then(() => res.status(200).json({ message: 'User deleted!' }))
     .catch((error) =>
-      res.status(400).json({ message: "Invalid Request!", error })
+      res.status(400).json({ message: 'Invalid Request!', error })
     );
 };
 
@@ -33,9 +33,9 @@ exports.updateUser = (req, res) => {
     .then((user) => {
       res
         .status(200)
-        .json({ message: "The user has been modified correclty!", user });
+        .json({ message: 'The user has been modified correclty!', user });
     })
     .catch((error) =>
-      res.status(401).json({ message: "Invalid Request!", error })
+      res.status(401).json({ message: 'Invalid Request!', error })
     );
 };

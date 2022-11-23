@@ -3,6 +3,9 @@
 const express = require('express');
 const mongoose = require('mongoose');
 
+// Use route in folder routes
+const userRoute = require('./routes/userRoute');
+
 const app = express();
 const PORT = process.env.SERVER_PORT;
 const DB = process.env.DB_URL;
@@ -16,11 +19,9 @@ mongoose
 app.use(express.urlencoded());
 app.use(express.json());
 
-// Use route in folder routes
-const userRoute = require('./routes/userRoute');
 userRoute(app);
 
-//Start the server
+// Start the server
 app.listen(PORT, () => {
   console.log(`Server listening at http://localhost:${PORT}`);
 });

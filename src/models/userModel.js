@@ -1,7 +1,7 @@
-const mongoose = require("mongoose");
-const bcrypt = require("bcrypt");
+const mongoose = require('mongoose');
+const bcrypt = require('bcrypt');
 
-const Schema = mongoose.Schema;
+const { Schema } = mongoose;
 
 const userSchema = new Schema({
   email: {
@@ -25,10 +25,10 @@ const userSchema = new Schema({
 });
 
 // Pre save to hash password
-userSchema.pre("save", function preSave(next) {
+userSchema.pre('save', function preSave(next) {
   const user = this;
 
-  if (!user.isModified("password")) return next();
+  if (!user.isModified('password')) return next();
 
   bcrypt
     .hash(user.password, 10)
@@ -36,9 +36,7 @@ userSchema.pre("save", function preSave(next) {
       user.password = hash;
       next();
     })
-    .catch((error) => {
-      return next(error);
-    });
+    .catch((error) => next(error));
 });
 
-module.exports = mongoose.model("User", userSchema);
+module.exports = mongoose.model('User', userSchema);
