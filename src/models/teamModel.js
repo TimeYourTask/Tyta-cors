@@ -16,6 +16,8 @@ const teamSchema = new Schema({
       },
       role: {
         type: String,
+        enum: ['admin', 'user'],
+        default: 'user',
       },
     },
   ],
