@@ -46,7 +46,14 @@ exports.updateTeamName = (req, res) => {
 exports.addUserToTeam = (req, res) => {
   Team.findByIdAndUpdate(
     req.params.teamId,
-    { $push: { users: req.body.userId } },
+    {
+      $push: {
+        users: {
+          id: req.body.userId,
+          role: req.body.role,
+        },
+      },
+    },
     {
       new: true,
       upsert: true,
@@ -75,6 +82,44 @@ exports.removeUserFromTeam = (req, res) => {
       res
         .status(200)
         .json({ message: 'The user has been removed from the team!', team });
+    })
+    .catch((error) =>
+      res.status(401).json({ message: 'Invalid Request!', error })
+    );
+};
+
+exports.addProjectToTeam = (req, res) => {
+  Team.findByIdAndUpdate(
+    req.params.teamId,
+    { $push: { projects: req.body.projectId } },
+    {
+      new: true,
+      upsert: true,
+    }
+  )
+    .then((team) => {
+      res
+        .status(200)
+        .json({ message: 'The project has been added to the team!', team });
+    })
+    .catch((error) =>
+      res.status(401).json({ message: 'Invalid Request!', error })
+    );
+};
+
+exports.removeProjectFromTeam = (req, res) => {
+  Team.findByIdAndUpdate(
+    req.params.teamId,
+    { $pull: { projects: req.body.projectId } },
+    {
+      new: true,
+      upsert: true,
+    }
+  )
+    .then((team) => {
+      res
+        .status(200)
+        .json({ message: 'The project has been removed from the team!', team });
     })
     .catch((error) =>
       res.status(401).json({ message: 'Invalid Request!', error })
