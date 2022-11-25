@@ -27,6 +27,9 @@ const teamSchema = new Schema({
       ref: 'Project',
     },
   ],
+},
+{
+    timestamps: true,
 });
 
 module.exports = mongoose.model('Team', teamSchema);
