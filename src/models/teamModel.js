@@ -9,8 +9,20 @@ const teamSchema = new Schema({
   },
   users: [
     {
+      id: {
+        type: Schema.Types.ObjectId,
+        ref: 'User',
+        required: true,
+      },
+      role: {
+        type: String,
+      },
+    },
+  ],
+  projects: [
+    {
       type: Schema.Types.ObjectId,
-      ref: 'User',
+      ref: 'Project',
     },
   ],
 });
