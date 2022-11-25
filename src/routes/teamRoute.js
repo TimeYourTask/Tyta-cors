@@ -8,4 +8,6 @@ module.exports = (app) => {
   app.put('/team/:teamId', teamCtrl.updateTeamName);
   app.put('/team/:teamId/user/', teamCtrl.addUserToTeam);
   app.delete('/team/:teamId/user/', teamCtrl.removeUserFromTeam);
+  app.put('/team/:teamId/project/', teamCtrl.addProjectToTeam);
+  app.delete('/team/:teamId/project/', teamCtrl.removeProjectFromTeam);
 };

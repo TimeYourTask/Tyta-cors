@@ -352,6 +352,66 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "/put addProjectToTeam",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"projectId\":\"ID\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3001/team/ID/project",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3001",
+							"path": [
+								"team",
+								"ID",
+								"project"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/delete removeProjectFromTeam",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"projectId\":\"ID\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3001/team/ID/project",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3001",
+							"path": [
+								"team",
+								"ID",
+								"project"
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		}
