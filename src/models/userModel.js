@@ -3,27 +3,30 @@ const bcrypt = require('bcrypt');
 
 const { Schema } = mongoose;
 
-const userSchema = new Schema({
-  email: {
-    type: String,
-    required: true,
-    unique: true,
+const userSchema = new Schema(
+  {
+    email: {
+      type: String,
+      required: true,
+      unique: true,
+    },
+    password: {
+      type: String,
+      required: true,
+    },
+    firstName: {
+      type: String,
+    },
+    lastName: {
+      type: String,
+    },
+    role: {
+      type: String,
+      default: 'user',
+    },
   },
-  password: {
-    type: String,
-    required: true,
-  },
-  firstName: {
-    type: String,
-  },
-  lastName: {
-    type: String,
-  },
-  role: {
-    type: String,
-    default: 'user',
-  },
-});
+  { timestamps: true }
+);
 
 // Pre save to hash password
 userSchema.pre('save', function (next) {
@@ -53,5 +56,10 @@ userSchema.pre('findOneAndUpdate', function () {
   }
   return true;
 });
+
+userSchema.methods.comparePassword = async function (candidatePassword) {
+  const user = this;
+  return bcrypt.compare(candidatePassword, user.password).catch(() => false);
+};
 
 module.exports = mongoose.model('User', userSchema);
