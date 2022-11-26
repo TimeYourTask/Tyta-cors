@@ -5,20 +5,20 @@ exports.createProject = (req, res) => {
   newProject
     .save()
     .then(() =>
-      res.status(201).json({ message: 'Project Created! :', newProject })
+      res.status(201).json({ message: 'Project Created! :', data: newProject })
     )
     .catch((error) => res.status(500).json({ error }));
 };
 
 exports.getProjects = (req, res) => {
   Project.find()
-    .then((projects) => res.status(200).json({ projects }))
+    .then((projects) => res.status(200).json({ data: projects }))
     .catch((error) => res.status(400).json({ error }));
 };
 
 exports.getOneProject = (req, res) => {
   Project.findById(req.params.projectId)
-    .then((project) => res.status(200).json({ project }))
+    .then((project) => res.status(200).json({ data: project }))
     .catch((error) => res.status(400).json({ error }));
 };
 
@@ -36,9 +36,10 @@ exports.updateProjectInfos = (req, res) => {
     upsert: true,
   })
     .then((project) => {
-      res
-        .status(200)
-        .json({ message: 'The project has been modified correclty!', project });
+      res.status(200).json({
+        message: 'The project has been modified correclty!',
+        data: project,
+      });
     })
     .catch((error) =>
       res.status(401).json({ message: 'Invalid Request!', error })
@@ -62,9 +63,10 @@ exports.addUserToProject = (req, res) => {
     }
   )
     .then((project) => {
-      res
-        .status(200)
-        .json({ message: 'The user has been added to the project!', project });
+      res.status(200).json({
+        message: 'The user has been added to the project!',
+        data: project,
+      });
     })
     .catch((error) =>
       res.status(401).json({ message: 'Invalid Request!', error })
@@ -83,7 +85,7 @@ exports.removeUserFromProject = (req, res) => {
     .then((project) => {
       res.status(200).json({
         message: 'The user has been removed from the project!',
-        project,
+        data: project,
       });
     })
     .catch((error) =>
