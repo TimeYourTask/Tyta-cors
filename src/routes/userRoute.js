@@ -1,4 +1,5 @@
 const userCtrl = require('../controllers/userCtrl');
+// const authMiddleware = require('../middleware/authMiddleware');
 
 module.exports = (app) => {
   app.post('/user/register', userCtrl.userRegister);
