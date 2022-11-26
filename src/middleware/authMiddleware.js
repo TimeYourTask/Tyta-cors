@@ -8,7 +8,6 @@ exports.verifyToken = (req, res, next) => {
   if (token !== undefined) {
     jwt.verify(token, jwtKey, (error) => {
       if (error) {
-        console.log(error);
         res.status(403);
         res.json({ message: 'Access Forbidden : Invalid Token' });
       } else {
