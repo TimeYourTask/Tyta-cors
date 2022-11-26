@@ -30,7 +30,7 @@ exports.deleteProject = (req, res) => {
     );
 };
 
-exports.updateTeamInfos = (req, res) => {
+exports.updateProjectInfos = (req, res) => {
   Project.findByIdAndUpdate(req.params.projectId, req.body, {
     new: true,
     upsert: true,
