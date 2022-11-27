@@ -44,18 +44,25 @@ exports.updateUser = (req, res) => {
     );
 };
 
-exports.userLogin = async (req, res) => {
+exports.userLogin = async (req, res, next) => {
   const user = await User.findOne({ email: req.body.email });
-  if (!user) res.status(500).json({ message: 'User not exist' });
+  if (!user) {
+    res.status(500).json({ message: 'User not exist' });
+    return;
+  }
 
   const isValid = await user.comparePassword(req.body.password);
-  if (!isValid) res.status(500).json({ message: 'Invalid Password' });
+  if (!isValid) {
+    res.status(500).json({ message: 'Invalid Password' });
+    return;
+  }
 
   const userData = {
     id: user.id,
     email: user.email,
     role: user.role,
   };
+
   jwt.sign(
     userData,
     process.env.JWT_KEY,
