@@ -19,3 +19,6 @@ yarn-debug.log*
 yarn-error.log*
 
 /coverage
+package-lock.json
+
+database

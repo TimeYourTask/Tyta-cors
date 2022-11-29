@@ -1,15 +1,23 @@
 require('dotenv').config();
 
-// Create a basic express server
-const mongoose = require('mongoose');
-const app = require('./app');
-const PORT = process.env.SERVER_PORT || 3000;
+// Use route in folder routes
+const userRoute = require('./routes/userRoute');
+const teamRoute = require('./routes/teamRoute');
+
+const app = express();
+const PORT = process.env.SERVER_PORT;
+const DB = process.env.DB_URL;
 
 // Implement mongoose
 mongoose
   .connect(process.env.MONGODB_URI)
   .then(() => {
-    console.log('Connected to MongoDB');
+    
+    app.use(express.urlencoded());
+    app.use(express.json());
+
+    userRoute(app);
+    teamRoute(app);
 
     app.listen(PORT, () => {
       console.log(`Server listening at http://localhost:${PORT}`);
