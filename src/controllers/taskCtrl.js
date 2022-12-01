@@ -21,7 +21,7 @@ exports.getOneTask = (req, res) => {
 };
 
 exports.deleteTask = (req, res) => {
-  Task.findByIdAndDelete(req.params.TaskId)
+  Task.findByIdAndDelete(req.params.taskId)
     .then(() => res.status(200).json({ message: 'Task deleted!' }))
     .catch((error) =>
       res.status(400).json({ message: 'Invalid Request!', error })
@@ -29,7 +29,7 @@ exports.deleteTask = (req, res) => {
 };
 
 exports.updateTask = (req, res) => {
-  Task.findByIdAndUpdate(req.params.TaskId, req.body, {
+  Task.findByIdAndUpdate(req.params.taskId, req.body, {
     new: true,
     upsert: true,
   })
