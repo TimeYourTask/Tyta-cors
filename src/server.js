@@ -6,6 +6,7 @@ const mongoose = require('mongoose');
 // Use route in folder routes
 const userRoute = require('./routes/userRoute');
 const teamRoute = require('./routes/teamRoute');
+const projectRoute = require('./routes/projectRoute');
 
 const app = express();
 const PORT = process.env.SERVER_PORT;
@@ -22,6 +23,7 @@ app.use(express.json());
 
 userRoute(app);
 teamRoute(app);
+projectRoute(app);
 
 // Start the server
 app.listen(PORT, () => {
