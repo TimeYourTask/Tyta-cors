@@ -5,7 +5,7 @@ exports.createProject = (req, res) => {
   newProject
     .save()
     .then(() =>
-      res.status(201).json({ message: 'Project Created! :', data: newProject })
+      res.status(201).json({ message: 'Project Created!', data: newProject })
     )
     .catch((error) => res.status(500).json({ error }));
 };
