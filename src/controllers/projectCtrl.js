@@ -37,7 +37,7 @@ exports.updateProjectInfos = (req, res) => {
   })
     .then((project) => {
       res.status(200).json({
-        message: 'The project has been modified correclty!',
+        message: 'The project has been modified correctly!',
         data: project,
       });
     })
