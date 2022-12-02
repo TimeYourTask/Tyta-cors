@@ -15,26 +15,43 @@ exports.getTasks = (req, res) => {
 };
 
 exports.getOneTask = (req, res) => {
-  Task.findById(req.params.TaskId)
-    .then((task) => res.status(200).json({ task }))
+  Task.findById(req.params.task_id)
+    .then((task) => {
+      if (!task) {
+        return res.status(404).json({ message: 'Task not found!' });
+      }
+      return res.status(200).json({ task });
+    })
     .catch((error) => res.status(400).json({ error }));
 };
 
 exports.deleteTask = (req, res) => {
-  Task.findByIdAndDelete(req.params.taskId)
-    .then(() => res.status(200).json({ message: 'Task deleted!' }))
+  Task.findByIdAndDelete(req.params.task_id)
+    .then((task) => {
+      if (!task) {
+        return res
+          .status(404)
+          .json({ message: 'No items deleted: task not found!' });
+      }
+      return res.status(200).json({ message: 'Task deleted!' });
+    })
     .catch((error) =>
       res.status(400).json({ message: 'Invalid Request!', error })
     );
 };
 
 exports.updateTask = (req, res) => {
-  Task.findByIdAndUpdate(req.params.taskId, req.body, {
+  console.log(req.params);
+  Task.findByIdAndUpdate(req.params.task_id, req.body, {
     new: true,
-    upsert: true,
   })
     .then((task) => {
-      res
+      if (!task) {
+        return res
+          .status(404)
+          .json({ message: 'No items updated : task not found!' });
+      }
+      return res
         .status(200)
         .json({ message: 'The Task has been modified correclty!', task });
     })
