@@ -8,7 +8,7 @@ exports.userRegister = (req, res) => {
   User.findOne({ email: req.body.email }).then((user) => {
     if (user) {
       return res.status(400).json({
-        message: 'Email already exist',
+        message: 'User already exist',
       });
     }
     newUser
