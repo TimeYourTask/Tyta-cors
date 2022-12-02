@@ -1,3 +1,6 @@
+const express = require('express');
+const mongoose = require('mongoose');
+
 require('dotenv').config();
 
 // Use route in folder routes
@@ -13,7 +16,6 @@ const DB = process.env.DB_URL;
 mongoose
   .connect(process.env.MONGODB_URI)
   .then(() => {
-    
     app.use(express.urlencoded());
     app.use(express.json());
 
