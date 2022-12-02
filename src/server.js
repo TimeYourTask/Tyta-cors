@@ -3,6 +3,7 @@ require('dotenv').config();
 // Use route in folder routes
 const userRoute = require('./routes/userRoute');
 const teamRoute = require('./routes/teamRoute');
+const projectRoute = require('./routes/projectRoute');
 
 const app = express();
 const PORT = process.env.SERVER_PORT;
@@ -18,6 +19,7 @@ mongoose
 
     userRoute(app);
     teamRoute(app);
+    projectRoute(app);
 
     app.listen(PORT, () => {
       console.log(`Server listening at http://localhost:${PORT}`);
