@@ -7,6 +7,7 @@ const mongoose = require('mongoose');
 const userRoute = require('./routes/userRoute');
 const teamRoute = require('./routes/teamRoute');
 const projectRoute = require('./routes/projectRoute');
+const taskRoute = require('./routes/taskRoute');
 
 const app = express();
 const PORT = process.env.SERVER_PORT;
@@ -24,6 +25,7 @@ app.use(express.json());
 userRoute(app);
 teamRoute(app);
 projectRoute(app);
+taskRoute(app);
 
 // Start the server
 app.listen(PORT, () => {
