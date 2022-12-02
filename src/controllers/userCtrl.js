@@ -1,12 +1,28 @@
 const jwt = require('jsonwebtoken');
 const User = require('../models/userModel');
+const sendEmail = require('../utils/nodemailer');
 
 exports.userRegister = (req, res) => {
   const newUser = new User(req.body);
-  newUser
-    .save()
-    .then(() => res.status(201).json({ message: 'User Created! :', newUser }))
-    .catch((error) => res.status(500).json({ error }));
+  //check if email already exist
+  User.findOne({ email: req.body.email }).then((user) => {
+    if (user) {
+      return res.status(400).json({
+        message: 'Email already exist',
+      });
+    }
+    newUser
+      .save()
+      .then(() => {
+        sendEmail(
+          newUser.email,
+          'Welcome to the app!',
+          'Thank you for registering to our app!'
+        );
+        res.status(201).json({ message: 'User created! :', newUser });
+      })
+      .catch((error) => res.status(500).json({ error }));
+  });
 };
 
 exports.getUsers = (req, res) => {
