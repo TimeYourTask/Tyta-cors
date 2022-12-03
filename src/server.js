@@ -11,6 +11,7 @@ const projectRoute = require('./routes/projectRoute');
 const taskRoute = require('./routes/taskRoute');
 const authRoute = require('./routes/authRoute');
 const timeTaskRoute = require('./routes/timeTaskRoute');
+const resetPasswordRoute = require('./routes/resetPasswordRoute');
 
 const app = express();
 const PORT = process.env.SERVER_PORT;
@@ -29,6 +30,7 @@ mongoose
 
     userRoute(app);
     authRoute(app);
+    resetPasswordRoute(app);
     teamRoute(app);
     projectRoute(app);
     taskRoute(app);
