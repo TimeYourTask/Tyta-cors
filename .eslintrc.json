@@ -4,11 +4,7 @@
     "es6": true,
     "node": true
   },
-  "extends": [
-    "airbnb-base",
-    "prettier",
-    "plugin:node/recommended"
-  ],
+  "extends": ["airbnb-base", "prettier", "plugin:node/recommended"],
   "globals": {
     "Atomics": "readonly",
     "SharedArrayBuffer": "readonly"
@@ -16,9 +12,7 @@
   "parserOptions": {
     "ecmaVersion": 2018
   },
-  "plugins": [
-    "prettier"
-  ],
+  "plugins": ["prettier"],
   "rules": {
     "prettier/prettier": "error",
     "no-unused-vars": "warn",
@@ -27,14 +21,14 @@
     "no-plusplus": "off",
     "no-process-exit": "off",
     "class-methods-use-this": "off",
-<<<<<<< HEAD
-    "node/no-unpublished-require": ["error", {
-      "allowModules": [],
-      "convertPath": null,
-      "tryExtensions": [".js", ".json", ".node"]
-  }]
-=======
+    "node/no-unpublished-require": [
+      "error",
+      {
+        "allowModules": [],
+        "convertPath": null,
+        "tryExtensions": [".js", ".json", ".node"]
+      }
+    ],
     "endOfLine": "auto"
->>>>>>> c20616f (chore(eslint): End of line 'cr' on windows error)
   }
 }
