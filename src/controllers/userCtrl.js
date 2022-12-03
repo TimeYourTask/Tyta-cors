@@ -119,10 +119,7 @@ exports.resetPassword = async (req, res) => {
   try {
     const user = await User.findOne({ email: req.body.email });
     if (!user) {
-      return res.status(200).json({
-        message:
-          'If our services find a match with the address you entered, you will receive a reset link in a few moments.',
-      });
+      return res.status(404).json({ message: 'No user with this email' });
     }
 
     let token = await Token.findOne({ user_id: user.id });
@@ -133,12 +130,9 @@ exports.resetPassword = async (req, res) => {
       }).save();
     }
 
-    const link = `${process.env.FRONTEND_URL}/reset-password?token=${token.token}&id=${token.id}`;
+    const link = `${process.env.FRONTEND_URL}/reset-password?token=${token.token}&id=${user.id}`;
     await sendEmail(user.email, 'Password Reset', link);
-    return res.status(200).json({
-      message:
-        'If our services find a match with the address you entered, you will receive a reset link in a few moments.',
-    });
+    return res.status(200).json({ message: `Email sent successfully!` });
   } catch (error) {
     return res.status(400).json({ message: 'Something went wrong!' });
   }
