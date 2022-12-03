@@ -27,10 +27,14 @@
     "no-plusplus": "off",
     "no-process-exit": "off",
     "class-methods-use-this": "off",
+<<<<<<< HEAD
     "node/no-unpublished-require": ["error", {
       "allowModules": [],
       "convertPath": null,
       "tryExtensions": [".js", ".json", ".node"]
   }]
+=======
+    "endOfLine": "auto"
+>>>>>>> c20616f (chore(eslint): End of line 'cr' on windows error)
   }
 }

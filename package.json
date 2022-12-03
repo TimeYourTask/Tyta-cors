@@ -6,7 +6,8 @@
   "scripts": {
     "test": "jest --coverage --detectOpenHandles",
     "start": "nodemon .",
-    "lint": "npx eslint ."
+    "lint": "npx eslint .",
+    "lint:fix": "eslint --fix"
   },
   "repository": {
     "type": "git",
