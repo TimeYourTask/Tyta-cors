@@ -1,17 +1,21 @@
 const jwt = require('jsonwebtoken');
+const crypto = require('crypto');
+
 const User = require('../models/userModel');
+const Token = require('../models/tokenModel');
+
 const sendEmail = require('../utils/nodemailer');
 
 exports.userRegister = (req, res) => {
   const newUser = new User(req.body);
-  //check if email already exist
+  // Check if email already exist
   User.findOne({ email: req.body.email }).then((user) => {
     if (user) {
       return res.status(400).json({
         message: 'User already exist',
       });
     }
-    newUser
+    return newUser
       .save()
       .then(() => {
         sendEmail(
@@ -94,4 +98,51 @@ exports.userLogin = async (req, res, next) => {
       }
     }
   );
+};
+
+exports.resetPassword = async (req, res) => {
+  try {
+    const user = await User.findOne({ email: req.body.email });
+    if (!user) {
+      return res.status(404).json({ message: 'No user with this email' });
+    }
+
+    let token = await Token.findOne({ user_id: user.id });
+    if (!token) {
+      token = await new Token({
+        user_id: user.id,
+        token: crypto.randomBytes(32).toString('hex'),
+      }).save();
+    }
+
+    const link = `${process.env.FRONTEND_URL}/reset-password?token=${token.token}&id=${user.id}`;
+    await sendEmail(user.email, 'Password Reset', link);
+    return res.status(200).json({ message: `Email sent successfully!` });
+  } catch (error) {
+    return res.status(400).json({ message: 'Something went wrong!' });
+  }
+};
+
+exports.checkResetToken = async (req, res) => {
+  try {
+    const user = await User.findById(req.params.user_id);
+    if (!user)
+      return res.status(400).json({ message: 'Invalid link or expired' });
+
+    const token = await Token.findOne({
+      user_id: user.id,
+      token: req.params.token,
+    });
+    if (!token)
+      return res.status(400).json({ message: 'Invalid link or expired' });
+
+    user.password = req.body.password;
+    await user.save();
+    await token.delete();
+
+    return res.status(200).json({ message: 'Password reset successfully.' });
+  } catch (error) {
+    console.log(error);
+    return res.status(400).json({ message: 'Something went wrong!' });
+  }
 };
