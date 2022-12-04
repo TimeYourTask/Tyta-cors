@@ -7,7 +7,8 @@ const timeTaskSchema = new Schema(
     time: [
       {
         start_date: {
-          type: Date
+          type: Date,
+          default: new Date().toISOString()
         },
         end_date: {
           type: Date,
