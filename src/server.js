@@ -10,6 +10,7 @@ const teamRoute = require('./routes/teamRoute');
 const projectRoute = require('./routes/projectRoute');
 const taskRoute = require('./routes/taskRoute');
 const authRoute = require('./routes/authRoute');
+const timeTaskRoute = require('./routes/timeTaskRoute');
 
 const app = express();
 const PORT = process.env.SERVER_PORT;
@@ -31,6 +32,7 @@ mongoose
     teamRoute(app);
     projectRoute(app);
     taskRoute(app);
+    timeTaskRoute(app);
 
     app.listen(PORT, () => {
       console.log(`Server listening at http://localhost:${PORT}`);
