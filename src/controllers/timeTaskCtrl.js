@@ -47,11 +47,16 @@ exports.updateTimeTask = (req, res) => {
       if (!timeTask) {
         return res.status(404).json({ message: 'TimeTask not found!' });
       }
+      // Get last time registered
       let lastTime = timeTask.time[timeTask.time.length - 1];
+      // Check value received
+      // If start_date received check if timer is running
       if (req.body.time.start_date) {
+        // If end_null is null so a start_date is running
         if (!(lastTime.end_date)) {
           return res.status(400).json({ message: 'A time is running on this task, you cant start a new time' })
         } else {
+          // Else init a new time with start-date received
           const updTime = {
             time: [
               ...timeTask.time,
@@ -73,6 +78,7 @@ exports.updateTimeTask = (req, res) => {
               res.status(401).json({ message: 'Invalid Request!', error })
             );
         }
+        // If end_date received check if a timer is running
       } else if (req.body.time.end_date) {
         if (!(lastTime.end_date)) {
           lastTime.end_date = req.body.time.end_date;
@@ -96,6 +102,8 @@ exports.updateTimeTask = (req, res) => {
         } else {
           return res.status(400).json({ message: 'No timer started' })
         }
+      } else {
+        return res.status(500).json({ message: 'Invalid body data' })
       }
     })
     .catch((error) =>
