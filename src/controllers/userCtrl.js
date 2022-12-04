@@ -106,7 +106,7 @@ exports.resetPassword = async (req, res) => {
     if (!user) {
       return res.status(200).json({
         message:
-          'We have sent an email to this address, if it exists in our data we invite you to look in a few moments.',
+          'If our services find a match with the address you entered, you will receive a reset link in a few moments.',
       });
     }
 
@@ -118,11 +118,11 @@ exports.resetPassword = async (req, res) => {
       }).save();
     }
 
-    const link = `${process.env.FRONTEND_URL}/reset-password?token=${token.token}&id=${user.id}`;
+    const link = `${process.env.FRONTEND_URL}/reset-password?token=${token.token}&id=${token.id}`;
     await sendEmail(user.email, 'Password Reset', link);
     return res.status(200).json({
       message:
-        'We have sent an email to this address, if it exists in our data we invite you to look in a few moments.',
+        'If our services find a match with the address you entered, you will receive a reset link in a few moments.',
     });
   } catch (error) {
     return res.status(400).json({ message: 'Something went wrong!' });
@@ -131,16 +131,20 @@ exports.resetPassword = async (req, res) => {
 
 exports.checkResetToken = async (req, res) => {
   try {
-    const user = await User.findById(req.params.user_id);
-    if (!user)
-      return res.status(400).json({ message: 'Invalid link or expired' });
-
     const token = await Token.findOne({
-      user_id: user.id,
+      id: req.params.token_id,
       token: req.params.token,
     });
     if (!token)
-      return res.status(400).json({ message: 'Invalid link or expired' });
+      return res
+        .status(400)
+        .json({ message: 'Invalid or expired link, please try again later.' });
+
+    const user = await User.findById(token.user_id);
+    if (!user)
+      return res
+        .status(400)
+        .json({ message: 'Invalid or expired link, please try again later.' });
 
     user.password = req.body.password;
     await user.save();
