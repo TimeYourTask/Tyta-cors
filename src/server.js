@@ -9,7 +9,7 @@ const userRoute = require('./routes/userRoute');
 const teamRoute = require('./routes/teamRoute');
 const projectRoute = require('./routes/projectRoute');
 const taskRoute = require('./routes/taskRoute');
-const resetPasswordRoute = require('./routes/resetPasswordRoute');
+const authRoute = require('./routes/authRoute');
 
 const app = express();
 const PORT = process.env.SERVER_PORT;
@@ -27,7 +27,7 @@ mongoose
     app.use(cors(corsOptions));
 
     userRoute(app);
-    resetPasswordRoute(app);
+    authRoute(app);
     teamRoute(app);
     projectRoute(app);
     taskRoute(app);
