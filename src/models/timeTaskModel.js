@@ -6,11 +6,12 @@ const timeTaskSchema = new Schema(
   {
     time: [
       {
-        start_data: {
+        start_date: {
           type: Date
         },
         end_date: {
-          type: Date
+          type: Date,
+          default: null
         },
       },
     ],
