@@ -7,19 +7,19 @@ exports.createProject = (req, res) => {
     .then(() =>
       res.status(201).json({ message: 'Project Created!', data: newProject })
     )
-    .catch((error) => res.status(500).json({ error }));
+    .catch((error) => res.status(500).json(error));
 };
 
 exports.getProjects = (req, res) => {
   Project.find()
-    .then((projects) => res.status(200).json({ data: projects }))
-    .catch((error) => res.status(400).json({ error }));
+    .then((projects) => res.status(200).json(projects))
+    .catch((error) => res.status(400).json(error));
 };
 
 exports.getOneProject = (req, res) => {
   Project.findById(req.params.projectId)
-    .then((project) => res.status(200).json({ data: project }))
-    .catch((error) => res.status(400).json({ error }));
+    .then((project) => res.status(200).json(projects))
+    .catch((error) => res.status(400).json(error));
 };
 
 exports.deleteProject = (req, res) => {
