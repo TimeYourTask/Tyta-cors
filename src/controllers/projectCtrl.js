@@ -24,7 +24,13 @@ exports.getOneProject = (req, res) => {
 
 exports.deleteProject = (req, res) => {
   Project.findByIdAndDelete(req.params.projectId)
-    .then(() => res.status(200).json({ message: 'Project deleted!' }))
+    .then((project) => {
+      if (!project)
+        res
+          .status(400)
+          .json({ message: 'No item deleted: project not found!' });
+      else res.status(200).json({ message: 'Project deleted!' });
+    })
     .catch((error) =>
       res.status(400).json({ message: 'Invalid Request!', error })
     );
