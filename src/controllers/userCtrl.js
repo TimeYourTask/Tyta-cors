@@ -1,17 +1,21 @@
 const jwt = require('jsonwebtoken');
+const crypto = require('crypto');
+
 const User = require('../models/userModel');
+const Token = require('../models/tokenModel');
+
 const sendEmail = require('../utils/nodemailer');
 
 exports.userRegister = (req, res) => {
   const newUser = new User(req.body);
-  //check if email already exist
+  // Check if email already exist
   User.findOne({ email: req.body.email }).then((user) => {
     if (user) {
       return res.status(400).json({
         message: 'User already exist',
       });
     }
-    newUser
+    return newUser
       .save()
       .then(() => {
         sendEmail(
@@ -94,4 +98,61 @@ exports.userLogin = async (req, res, next) => {
       }
     }
   );
+};
+
+exports.resetPassword = async (req, res) => {
+  try {
+    const user = await User.findOne({ email: req.body.email });
+    if (!user) {
+      return res.status(200).json({
+        message:
+          'If our services find a match with the address you entered, you will receive a reset link in a few moments.',
+      });
+    }
+
+    let token = await Token.findOne({ user_id: user.id });
+    if (!token) {
+      token = await new Token({
+        user_id: user.id,
+        token: crypto.randomBytes(32).toString('hex'),
+      }).save();
+    }
+
+    const link = `${process.env.FRONTEND_URL}/reset-password?token=${token.token}&id=${token.id}`;
+    await sendEmail(user.email, 'Password Reset', link);
+    return res.status(200).json({
+      message:
+        'If our services find a match with the address you entered, you will receive a reset link in a few moments.',
+    });
+  } catch (error) {
+    return res.status(400).json({ message: 'Something went wrong!' });
+  }
+};
+
+exports.checkResetToken = async (req, res) => {
+  try {
+    const token = await Token.findOne({
+      id: req.params.token_id,
+      token: req.params.token,
+    });
+    if (!token)
+      return res
+        .status(400)
+        .json({ message: 'Invalid or expired link, please try again later.' });
+
+    const user = await User.findById(token.user_id);
+    if (!user)
+      return res
+        .status(400)
+        .json({ message: 'Invalid or expired link, please try again later.' });
+
+    user.password = req.body.password;
+    await user.save();
+    await token.delete();
+
+    return res.status(200).json({ message: 'Password reset successfully.' });
+  } catch (error) {
+    console.log(error);
+    return res.status(400).json({ message: 'Something went wrong!' });
+  }
 };
