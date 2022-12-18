@@ -1,5 +1,6 @@
 const express = require('express');
 const mongoose = require('mongoose');
+const cors = require('cors');
 
 require('dotenv').config();
 
@@ -9,10 +10,14 @@ const teamRoute = require('./routes/teamRoute');
 const projectRoute = require('./routes/projectRoute');
 const taskRoute = require('./routes/taskRoute');
 const timeTaskRoute = require('./routes/timeTaskRoute');
+const authRoute = require('./routes/authRoute');
 
 const app = express();
 const PORT = process.env.SERVER_PORT;
-const DB = process.env.DB_URL;
+const corsOptions = {
+  origin: process.env.FRONTEND_URL,
+  optionsSuccessStatus: 200,
+};
 
 // Implement mongoose
 mongoose
@@ -20,8 +25,10 @@ mongoose
   .then(() => {
     app.use(express.urlencoded());
     app.use(express.json());
+    app.use(cors(corsOptions));
 
     userRoute(app);
+    authRoute(app);
     teamRoute(app);
     projectRoute(app);
     taskRoute(app);

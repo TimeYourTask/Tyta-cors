@@ -24,7 +24,13 @@ exports.getOneProject = (req, res) => {
 
 exports.deleteProject = (req, res) => {
   Project.findByIdAndDelete(req.params.projectId)
-    .then(() => res.status(200).json({ message: 'Project deleted!' }))
+    .then((project) => {
+      if (!project)
+        res
+          .status(400)
+          .json({ message: 'No item deleted: project not found!' });
+      else res.status(200).json({ message: 'Project deleted!' });
+    })
     .catch((error) =>
       res.status(400).json({ message: 'Invalid Request!', error })
     );
@@ -33,13 +39,17 @@ exports.deleteProject = (req, res) => {
 exports.updateProjectInfos = (req, res) => {
   Project.findByIdAndUpdate(req.params.projectId, req.body, {
     new: true,
-    upsert: true,
   })
     .then((project) => {
-      res.status(200).json({
-        message: 'The project has been modified correctly!',
-        data: project,
-      });
+      if (!project)
+        res
+          .status(400)
+          .json({ message: 'No Item updated: The project does not exist' });
+      else
+        res.status(200).json({
+          message: 'The project has been modified correctly!',
+          data: project,
+        });
     })
     .catch((error) =>
       res.status(401).json({ message: 'Invalid Request!', error })

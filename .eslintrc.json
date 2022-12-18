@@ -27,6 +27,11 @@
     "no-plusplus": "off",
     "no-process-exit": "off",
     "class-methods-use-this": "off",
-    "endOfLine": "auto"
+    "endOfLine": "auto",
+    "node/no-unpublished-require": ["error", {
+      "allowModules": [],
+      "convertPath": null,
+      "tryExtensions": [".js", ".json", ".node"]
+    }]
   }
 }
