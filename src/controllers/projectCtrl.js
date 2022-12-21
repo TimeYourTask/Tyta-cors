@@ -64,7 +64,10 @@ exports.addUserToProject = (req, res) => {
             message: 'User already in the project',
           });
         }
-        project.users.push(req.body.userId);
+        project.users.push({
+          id: req.body.userId,
+          role: req.body.role || 'user',
+        });
         project
           .save()
           .then((newProject) =>
