@@ -5,8 +5,6 @@ const jwtKey = process.env.JWT_KEY;
 exports.authMiddleware = (req, res, next) => {
   const token = req.headers.authorization;
 
-  console.log(token);
-
   if (token !== undefined) {
     jwt.verify(token, jwtKey, (error) => {
       if (error) {
