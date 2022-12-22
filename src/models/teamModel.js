@@ -10,7 +10,7 @@ const teamSchema = new Schema(
     },
     users: [
       {
-        id: {
+        user: {
           type: Schema.Types.ObjectId,
           ref: 'User',
           required: true,
