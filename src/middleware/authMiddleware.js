@@ -2,8 +2,10 @@ const jwt = require('jsonwebtoken');
 
 const jwtKey = process.env.JWT_KEY;
 
-exports.verifyToken = (req, res, next) => {
+exports.authMiddleware = (req, res, next) => {
   const token = req.headers.authorization;
+
+  console.log(token);
 
   if (token !== undefined) {
     jwt.verify(token, jwtKey, (error) => {
@@ -11,6 +13,7 @@ exports.verifyToken = (req, res, next) => {
         res.status(403);
         res.json({ message: 'Access Forbidden : Invalid Token' });
       } else {
+        req.userId = jwt.decode(token).id;
         next();
       }
     });

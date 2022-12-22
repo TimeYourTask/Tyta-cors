@@ -103,7 +103,13 @@ exports.userLogin = async (req, res, next) => {
         res.json({ message: 'Can not generate token' });
       } else {
         res.status(200);
-        res.json({ token });
+        res.json({
+              token,
+              firstName: user.firstName,
+              lastName: user.lastName,
+              email: user.email
+            }
+        );
       }
     }
   );

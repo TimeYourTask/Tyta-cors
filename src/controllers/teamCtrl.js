@@ -18,8 +18,18 @@ exports.getTeams = (req, res) => {
     .catch((error) => res.status(400).json(error));
 };
 
+exports.getMyTeams = (req, res) => {
+    Team.find({ 'users.user': req.userId })
+        .populate('users.user')
+        .then((teams) => {
+        res.status(200).json(teams);
+        })
+        .catch((error) => res.status(400).json(error));
+}
+
 exports.getOneTeam = (req, res) => {
   Team.findById(req.params.teamId)
+    .populate('users.user')
     .then((team) => res.status(200).json(team))
     .catch((error) => res.status(400).json(error));
 };
