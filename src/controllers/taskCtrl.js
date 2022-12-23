@@ -8,7 +8,7 @@ exports.createTask = (req, res) => {
     .catch((error) => res.status(500).json({ error }));
 };
 
-exports.getTasks = (req, res) => {
+exports.getTasks = (_, res) => {
   Task.find()
     .then((tasks) => res.status(200).json({ tasks }))
     .catch((error) => res.status(400).json({ error }));

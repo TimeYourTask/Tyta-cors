@@ -1,4 +1,5 @@
 const TimeTask = require('../models/timeTaskModel');
+const Task = require('../models/taskModel');
 
 const getTimeTask = (taskId) => {
   return new Promise((resolve, reject) => {
@@ -90,6 +91,36 @@ exports.endTimeTask = (req, res) => {
             .json({ message: 'The timer has been modified correclty', result });
         })
         .catch((error) => res.status(400).json({ error }));
+    })
+    .catch((error) => res.status(400).json({ error }));
+};
+
+exports.getUserTimeTasks = (_, res) => {
+  Task.find({ assigned: res.locals.user.id })
+    .then(async (task) => {
+      if (!task) {
+        return res.status(404).json({ message: 'Task not found' });
+      }
+      // Find timer data of all Task found
+      let timeTaskFound = [];
+      for (const taskData of task) {
+        // Search timer of Task
+        await getTimeTask(taskData.id)
+          .then((data) => {
+            console.log(data);
+            // If timer find, check if last timer is running
+            if (data.timeTask) {
+              const lastTime = data.timeTask.time[data.timeTask.time.length - 1];
+              // If end_date of lastTime is null, so timer is running and add to array
+              if (!lastTime.end_date) timeTaskFound.push(data.timeTask)
+            }
+          })
+          .catch((error) => res.status(400).json({ error }));
+      }
+      if (!timeTaskFound.length) {
+        return res.status(400).json({ message: 'All task found, doesn\'t have a timer started ' })
+      }
+      return res.status(200).json({ timeTask: timeTaskFound })
     })
     .catch((error) => res.status(400).json({ error }));
 };
