@@ -23,7 +23,7 @@ exports.userRegister = (req, res) => {
           'Welcome to the app!',
           'Thank you for registering to our app!'
         );
-        res.status(201).json({ message: 'User created! :', newUser });
+        res.status(201).json({ message: 'User created!', newUser });
       })
       .catch((error) => res.status(500).json({ error }));
   });

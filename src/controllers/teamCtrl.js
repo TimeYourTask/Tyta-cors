@@ -4,7 +4,7 @@ exports.createTeam = (req, res) => {
   const newTeam = new Team(req.body);
   newTeam
     .save()
-    .then(() => res.status(201).json({ message: 'Team Created! :', newTeam }))
+    .then(() => res.status(201).json({ message: 'Team Created!', newTeam }))
     .catch((error) => res.status(500).json({ error }));
 };
 
