@@ -4,7 +4,7 @@ exports.createTask = (req, res) => {
   const newTask = new Task(req.body);
   newTask
     .save()
-    .then(() => res.status(201).json({ message: 'Task Created! :', newTask }))
+    .then(() => res.status(201).json({ message: 'Task Created!', newTask }))
     .catch((error) => res.status(500).json({ error }));
 };
 
