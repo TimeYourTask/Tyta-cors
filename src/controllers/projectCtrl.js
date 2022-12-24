@@ -1,24 +1,62 @@
-const Project = require('../models/projectModel');
+const { isValidObjectId } = require('mongoose');
 
-exports.createProject = (req, res) => {
-  const newProject = new Project(req.body);
+const Project = require('../models/projectModel');
+const Team = require('../models/teamModel');
+
+exports.createProject = async (req, res) => {
+  const { teamId } = req.params;
+
+  if (!isValidObjectId(teamId)) {
+    return res
+      .status(400)
+      .json({ message: 'The information provided is incorrect!' });
+  }
+
+  const isTeamExist = await Team.findById(teamId);
+  if (!isTeamExist) {
+    return res
+      .status(400)
+      .json({ message: 'The information provided is incorrect!' });
+  }
+
+  const payload = {
+    ...req.body,
+    team: teamId,
+    users: [{ user: req.userId, role: 'admin' }],
+  };
+
+  const newProject = new Project(payload);
+
+  const editTeam = new Team(isTeamExist);
+  editTeam.projects.push(newProject.id);
+  editTeam.save();
+
   newProject
     .save()
-    .then(() =>
-      res.status(201).json({ message: 'Project Created!', data: newProject })
+    .then((project) =>
+      res.status(201).json({ message: 'Project Created!', data: project })
     )
     .catch((error) => res.status(500).json(error));
 };
 
-exports.getProjects = (req, res) => {
+exports.getAllProjects = (req, res) => {
   Project.find()
+    .populate(['users.user', 'team'])
     .then((projects) => res.status(200).json(projects))
     .catch((error) => res.status(400).json(error));
 };
 
 exports.getOneProject = (req, res) => {
   Project.findById(req.params.projectId)
+    .populate(['users.user', 'team'])
     .then((project) => res.status(200).json(project))
+    .catch((error) => res.status(400).json(error));
+};
+
+exports.getUserProjects = (req, res) => {
+  Project.find({ 'users.user': req.userId })
+    .populate(['users.user', 'team'])
+    .then((projects) => res.status(200).json(projects))
     .catch((error) => res.status(400).json(error));
 };
 
