@@ -2,6 +2,9 @@ const mongoose = require('mongoose');
 
 const { Schema } = mongoose;
 
+const Team = mongoose.models.Team;
+const Task = mongoose.models.Task;
+
 const projectSchema = new Schema(
   {
     name: {
@@ -36,5 +39,20 @@ const projectSchema = new Schema(
     timestamps: true,
   }
 );
+
+projectSchema.pre('remove', function (next) {
+  Team.updateOne(
+    { id: this.team },
+    {
+      $pullAll: {
+        projects: this.id,
+      },
+    }
+  );
+
+  Task.deleteMany({ project: this.id });
+
+  next();
+});
 
 module.exports = mongoose.model('Project', projectSchema);
