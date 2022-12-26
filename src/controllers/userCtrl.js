@@ -104,12 +104,12 @@ exports.userLogin = async (req, res, next) => {
       } else {
         res.status(200);
         res.json({
-              token,
-              firstName: user.firstName,
-              lastName: user.lastName,
-              email: user.email
-            }
-        );
+          token,
+          firstName: user.firstName,
+          lastName: user.lastName,
+          email: user.email,
+          id: user.id,
+        });
       }
     }
   );
