@@ -92,34 +92,35 @@ exports.updateProjectInfos = (req, res) => {
 exports.addUserToProject = (req, res) => {
   // check if project exist
   Project.findById(req.params.projectId)
-    // eslint-disable-next-line consistent-return
     .then((project) => {
-      if (project) {
-        const user = project.users.find(
-          (u) => u.toString() === req.body.userId
-        );
-        if (user) {
-          return res.status(400).json({
-            message: 'User already in the project',
-          });
-        }
-        project.users.push({
-          id: req.body.userId,
-          role: req.body.role || 'user',
+      if (!project) {
+        res.status(404).json({
+          message: 'Project not found!',
         });
-        project
-          .save()
-          .then((newProject) =>
-            res.status(200).json({
-              message: 'User added to project!',
-              newProject,
-            })
-          )
-          .catch((error) => res.status(500).json(error));
       }
-      res.status(404).json({
-        message: 'Project not found!',
+
+      const user = project.users.find(
+        (u) => u.user.toString() === req.params.userId
+      );
+      if (user) {
+        return res.status(400).json({
+          message: 'User already in the project',
+        });
+      }
+
+      project.users.push({
+        user: req.params.userId,
+        role: req.body.role || 'user',
       });
+      return project
+        .save()
+        .then((newProject) =>
+          res.status(200).json({
+            message: 'User added to project!',
+            newProject,
+          })
+        )
+        .catch((error) => res.status(500).json(error));
     })
     .catch((error) =>
       res.status(401).json({ message: 'Invalid Request!', error })
