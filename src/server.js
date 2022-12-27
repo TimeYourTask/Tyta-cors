@@ -52,3 +52,8 @@ mongoose
     });
   })
   .catch((err) => console.log('Could not connect to MongoDB', err));
+
+// Inplement Swagger
+const swaggerUI = require('swagger-ui-express');
+const swaggerDoc = require('./docs/swagger');
+app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(swaggerDoc));
