@@ -7,6 +7,21 @@ exports.createTeam = (req, res) => {
     .then(() => res.status(201).json({ message: 'Team Created! :', newTeam }))
     .catch((error) => res.status(500).json(error));
 };
+exports.createTeam = async (req, res) => {
+  const payload = {
+    ...req.body,
+    users: [{ user: req.userId, role: 'admin' }],
+  };
+
+  const team = new Team(payload);
+
+  team
+    .save()
+    .then((project) =>
+      res.status(201).json({ message: 'Team Created!', data: team })
+    )
+    .catch((error) => res.status(500).json(error));
+};
 
 exports.getTeams = (req, res) => {
   //get teams and replace user by full user
