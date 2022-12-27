@@ -55,7 +55,8 @@ exports.getOneProject = (req, res) => {
 
 exports.getUserProjects = (req, res) => {
   const { userId } = req.params;
-  Project.find({ 'users.user': userId })
+  const { team } = req.params;
+  Project.find({ 'users.user': userId, ...(team && { team }) })
     .populate(['users.user', 'team'])
     .then((projects) => res.status(200).json(projects))
     .catch((error) => res.status(400).json(error));
