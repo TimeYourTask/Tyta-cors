@@ -71,7 +71,7 @@ module.exports = {
           },
         ],
         responses: {
-          200: {
+          201: {
             description: 'Success',
             schema: {
               properties: {
@@ -316,9 +316,16 @@ module.exports = {
               },
             },
           },
-          500: {
+          400: {
             description: 'Error',
-            message: 'Internal Server Error',
+            schema: {
+              properties: {
+                message: {
+                  type: 'string',
+                  example: 'Something went wrong!',
+                },
+              },
+            },
           },
         },
       },
@@ -333,6 +340,63 @@ module.exports = {
             Authentification: [],
           },
         ],
+        parameters: [
+          {
+            in: 'path',
+            name: 'user_id',
+            schema: {
+              type: 'string',
+            },
+            required: true,
+            description: 'The user ID',
+          },
+        ],
+        responses: {
+          200: {
+            description: 'Success',
+            schema: {
+              type: 'object',
+              properties: {
+                _id: {
+                  type: 'string',
+                  example: '638d40d05ffcaacee3beabfc',
+                },
+                email: {
+                  type: 'string',
+                  example: 'quentin.aubert42@gmail.com',
+                },
+                password: {
+                  type: 'string',
+                  example:
+                    '$2b$10$vqczTLEGFdJz2GRQ9TPOveipEfrt/ijwtHGob2Vlg4aGeAlPQFMOS',
+                },
+                role: {
+                  type: 'string',
+                  example: 'user',
+                },
+                createdAt: {
+                  type: 'date-time',
+                  example: '2022-12-05T00:52:32.150Z',
+                },
+                updatedAt: {
+                  type: 'string',
+                  example: '2022-12-05T00:52:32.150Z',
+                },
+              },
+            },
+          },
+          400: {
+            description: 'Error',
+            schema: {
+              properties: {
+                message: {
+                  type: 'string',
+                  example: 'Something went wrong!',
+                },
+              },
+            },
+          },
+        },
       },
       put: {
         tags: ['Users'],
@@ -343,6 +407,77 @@ module.exports = {
             Authentification: [],
           },
         ],
+        parameters: [
+          {
+            in: 'path',
+            name: 'user_id',
+            schema: {
+              type: 'string',
+            },
+            required: true,
+            description: 'The user ID',
+          },
+          {
+            in: 'body',
+            name: 'body',
+            schema: {
+              type: 'object',
+              properties: {
+                email: {
+                  type: 'string',
+                  example: 'new+{{user_email}}',
+                },
+                password: {
+                  type: 'string',
+                  example: 'test',
+                },
+                firstName: {
+                  type: 'string',
+                  example: 'test',
+                },
+                lastName: {
+                  type: 'string',
+                  example: 'brysto',
+                },
+              },
+            },
+          },
+        ],
+        responses: {
+          200: {
+            description: 'Success',
+            schema: {
+              properties: {
+                message: {
+                  type: 'string',
+                  example: 'User updated!',
+                },
+              },
+            },
+          },
+          404: {
+            description: 'Error',
+            schema: {
+              properties: {
+                message: {
+                  type: 'string',
+                  example: 'User not found!',
+                },
+              },
+            },
+          },
+          500: {
+            description: 'Error',
+            schema: {
+              properties: {
+                message: {
+                  type: 'string',
+                  example: 'Internal Server Error!',
+                },
+              },
+            },
+          },
+        },
       },
       delete: {
         tags: ['Users'],
@@ -353,6 +488,52 @@ module.exports = {
             Authentification: [],
           },
         ],
+        parameters: [
+          {
+            in: 'path',
+            name: 'user_id',
+            schema: {
+              type: 'string',
+            },
+            required: true,
+            description: 'The user ID',
+          },
+        ],
+        responses: {
+          200: {
+            description: 'Success',
+            schema: {
+              properties: {
+                message: {
+                  type: 'string',
+                  example: 'User deleted!',
+                },
+              },
+            },
+          },
+          404: {
+            description: 'Error',
+            schema: {
+              properties: {
+                message: {
+                  type: 'string',
+                  example: 'User not found!',
+                },
+              },
+            },
+          },
+          500: {
+            description: 'Error',
+            schema: {
+              properties: {
+                message: {
+                  type: 'string',
+                  example: 'Internal Server Error!',
+                },
+              },
+            },
+          },
+        },
       },
     },
     // Teams
