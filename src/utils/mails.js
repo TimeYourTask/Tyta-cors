@@ -48,7 +48,43 @@ const resetPasswordEmail = (email, link) => {
   );
 };
 
+const userAddedToProjectEmail = (email, name, project) => {
+  sendEmail(
+    email,
+    'You have been added to a project!',
+    `Hi ${name}, you have been added to the project ${project}.`
+  );
+};
+
+const userAddedToTeamEmail = (email, name, team) => {
+  sendEmail(
+    email,
+    'You have been added to a team!',
+    `Hi ${name}, you have been added to the team ${team}.`
+  );
+};
+
+const userRemovedFromProjectEmail = (email, name, project) => {
+  sendEmail(
+    email,
+    'You have been removed from a project!',
+    `Hi ${name}, you have been removed from the project ${project}.`
+  );
+};
+
+const userRemovedFromTeamEmail = (email, name, team) => {
+  sendEmail(
+    email,
+    'You have been removed from a team!',
+    `Hi ${name}, you have been removed from the team ${team}.`
+  );
+};
+
 module.exports = {
   welcomeEmail,
   resetPasswordEmail,
+  userAddedToProjectEmail,
+  userAddedToTeamEmail,
+  userRemovedFromProjectEmail,
+  userRemovedFromTeamEmail,
 };
