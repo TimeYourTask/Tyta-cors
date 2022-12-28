@@ -21,14 +21,12 @@ exports.createTeam = async (req, res) => {
 
   team
     .save()
-    .then((project) =>
-      res.status(201).json({ message: 'Team Created!', data: team })
-    )
+    .then(() => res.status(201).json({ message: 'Team Created!', data: team }))
     .catch((error) => res.status(500).json(error));
 };
 
 exports.getTeams = (req, res) => {
-  //get teams and replace user by full user
+  // get teams and replace user by full user
   Team.find()
     .populate(['users.user', 'projects'])
     .then((teams) => {
@@ -77,11 +75,11 @@ exports.updateTeamName = (req, res) => {
 };
 
 exports.addUserToTeam = (req, res) => {
-  //check if user not in the team
+  // check if user not in the team
   Team.findById(req.params.teamId)
     .then((team) => {
       if (team) {
-        const user = team.users.find((user) => user.user == req.body.user);
+        const user = team.users.find((user) => user.user === req.body.user);
         if (user) {
           return res.status(400).json({
             message: 'User already in the team',
@@ -103,7 +101,7 @@ exports.addUserToTeam = (req, res) => {
 };
 
 exports.removeUserFromTeam = (req, res) => {
-  //check if user in team
+  // check if user in team
   Team.findById(req.params.teamId)
     .then((team) => {
       if (team) {
@@ -111,7 +109,7 @@ exports.removeUserFromTeam = (req, res) => {
           (user) => user.user.toString() === req.body.user
         );
         if (user) {
-          //remove user from team
+          // remove user from team
           team.users = team.users.filter(
             (user) => user.user.toString() !== req.body.user
           );
@@ -142,7 +140,7 @@ exports.removeUserFromTeam = (req, res) => {
 };
 
 exports.addProjectToTeam = (req, res) => {
-  //check if project not in team
+  // check if project not in team
   Team.findById(req.params.teamId)
     .then((team) => {
       if (team) {
@@ -173,7 +171,7 @@ exports.addProjectToTeam = (req, res) => {
 };
 
 exports.removeProjectFromTeam = (req, res) => {
-  //check if project in team
+  // check if project in team
   Team.findById(req.params.teamId)
     .then((team) => {
       if (team) {
@@ -181,7 +179,7 @@ exports.removeProjectFromTeam = (req, res) => {
           (project) => project.toString() === req.body.projectId
         );
         if (project) {
-          //remove project from team
+          // remove project from team
           team.projects = team.projects.filter(
             (project) => project.toString() !== req.body.projectId
           );
