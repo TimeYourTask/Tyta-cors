@@ -19,6 +19,7 @@
   },
   "homepage": "https://github.com/TimeYourTask/Tyta-cors#readme",
   "dependencies": {
+    "@jest/globals": "^29.3.1",
     "bcrypt": "^5.1.0",
     "cors": "^2.8.5",
     "crypto": "^1.0.1",

@@ -2,8 +2,8 @@ const mongoose = require('mongoose');
 
 const { Schema } = mongoose;
 
-const Team = mongoose.models.Team;
-const Task = mongoose.models.Task;
+const { Team } = mongoose.models;
+const { Task } = mongoose.models;
 
 const projectSchema = new Schema(
   {
