@@ -9,7 +9,15 @@ module.exports = (app) => {
   app.delete('/team/:teamId', verifyToken, teamCtrl.deleteTeam);
   app.put('/team/:teamId', verifyToken, teamCtrl.updateTeamName);
   app.put('/team/:teamId/user/', verifyToken, teamCtrl.addUserToTeam);
-  app.delete('/team/:teamId/user/', verifyToken, teamCtrl.removeUserFromTeam);
+  app.delete(
+    '/team/:teamId/user/',
+    verifyToken,
+    teamCtrl.removeUserFromTeam
+  );
   app.put('/team/:teamId/project/', verifyToken, teamCtrl.addProjectToTeam);
-  app.delete('/team/:teamId/project/', verifyToken, teamCtrl.removeProjectFromTeam);
+  app.delete(
+    '/team/:teamId/project/',
+    verifyToken,
+    teamCtrl.removeProjectFromTeam
+  );
 };

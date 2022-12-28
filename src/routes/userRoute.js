@@ -1,5 +1,5 @@
 const userCtrl = require('../controllers/userCtrl');
-const { verifyToken } = require('../middleware/authMiddleware');
+const { authMiddleware } = require('../middleware/authMiddleware');
 
 module.exports = (app) => {
   app.get('/users', verifyToken, userCtrl.getUsers);

@@ -2,6 +2,9 @@ const mongoose = require('mongoose');
 
 const { Schema } = mongoose;
 
+const Team = mongoose.models.Team;
+const Task = mongoose.models.Task;
+
 const projectSchema = new Schema(
   {
     name: {
@@ -10,11 +13,10 @@ const projectSchema = new Schema(
     },
     description: {
       type: String,
-      required: true,
     },
     users: [
       {
-        id: {
+        user: {
           type: Schema.Types.ObjectId,
           ref: 'User',
           required: true,
@@ -28,12 +30,28 @@ const projectSchema = new Schema(
     ],
     team: {
       type: Schema.Types.ObjectId,
-      ref: 'Project',
+      ref: 'Team',
+      required: true,
     },
   },
   {
     timestamps: true,
   }
 );
+
+projectSchema.pre('remove', function (next) {
+  Team.updateOne(
+    { id: this.team },
+    {
+      $pullAll: {
+        projects: this.id,
+      },
+    }
+  );
+
+  Task.deleteMany({ project: this.id });
+
+  next();
+});
 
 module.exports = mongoose.model('Project', projectSchema);

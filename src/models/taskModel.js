@@ -19,7 +19,7 @@ const taskSchema = new Schema(
       type: Schema.Types.ObjectId,
       ref: 'User',
     },
-    project_id: {
+    project: {
       type: Schema.Types.ObjectId,
       ref: 'Project',
       required: true,
