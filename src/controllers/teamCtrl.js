@@ -7,11 +7,26 @@ exports.createTeam = (req, res) => {
     .then(() => res.status(201).json({ message: 'Team Created! :', newTeam }))
     .catch((error) => res.status(500).json(error));
 };
+exports.createTeam = async (req, res) => {
+  const payload = {
+    ...req.body,
+    users: [{ user: req.userId, role: 'admin' }],
+  };
+
+  const team = new Team(payload);
+
+  team
+    .save()
+    .then((project) =>
+      res.status(201).json({ message: 'Team Created!', data: team })
+    )
+    .catch((error) => res.status(500).json(error));
+};
 
 exports.getTeams = (req, res) => {
   //get teams and replace user by full user
   Team.find()
-    .populate('users.user')
+    .populate(['users.user', 'projects'])
     .then((teams) => {
       res.status(200).json(teams);
     })
@@ -19,17 +34,17 @@ exports.getTeams = (req, res) => {
 };
 
 exports.getMyTeams = (req, res) => {
-    Team.find({ 'users.user': req.userId })
-        .populate('users.user')
-        .then((teams) => {
-        res.status(200).json(teams);
-        })
-        .catch((error) => res.status(400).json(error));
-}
+  Team.find({ 'users.user': req.userId })
+    .populate(['users.user', 'projects'])
+    .then((teams) => {
+      res.status(200).json(teams);
+    })
+    .catch((error) => res.status(400).json(error));
+};
 
 exports.getOneTeam = (req, res) => {
   Team.findById(req.params.teamId)
-    .populate('users.user')
+    .populate(['users.user', 'projects'])
     .then((team) => res.status(200).json(team))
     .catch((error) => res.status(400).json(error));
 };
