@@ -1,8 +1,8 @@
 // create a nodemailer transport config and function to send emails
 
-const nodemailer = require('nodemailer');
+const mails = require('nodemailer');
 
-const transporter = nodemailer.createTransport({
+const transporter = mails.createTransport({
   host: 'smtp-mail.outlook.com', // hostname
   secureConnection: false, // TLS requires secureConnection to be false
   port: 587, // port for secure SMTP
@@ -32,4 +32,23 @@ const sendEmail = (email, subject, text) => {
   });
 };
 
-module.exports = sendEmail;
+const welcomeEmail = (email, name) => {
+  sendEmail(
+    email,
+    'Welcome to Time Your Tasks!',
+    `Hi ${name}, welcome to Time Your Tasks!`
+  );
+};
+
+const resetPasswordEmail = (email, link) => {
+  sendEmail(
+    email,
+    'Password Reset',
+    `Please use the following link to reset your password: ${link}`
+  );
+};
+
+module.exports = {
+  welcomeEmail,
+  resetPasswordEmail,
+};

@@ -4,7 +4,8 @@ const crypto = require('crypto');
 const User = require('../models/userModel');
 const Token = require('../models/tokenModel');
 
-const sendEmail = require('../utils/nodemailer');
+const sendEmail = require('../utils/mails');
+const { welcomeEmail, resetPasswordEmail } = require('../utils/mails');
 
 exports.userRegister = (req, res) => {
   const newUser = new User(req.body);
@@ -18,11 +19,7 @@ exports.userRegister = (req, res) => {
     return newUser
       .save()
       .then(() => {
-        sendEmail(
-          newUser.email,
-          'Welcome to the app!',
-          'Thank you for registering to our app!'
-        );
+        welcomeEmail(newUser.email, newUser.firstName);
         res.status(201).json({ message: 'User created! :', newUser });
       })
       .catch((error) => res.status(500).json(error));
@@ -99,17 +96,15 @@ exports.userLogin = async (req, res, next) => {
     (error, token) => {
       if (error) {
         res.status(500);
-        console.log(error);
         res.json({ message: 'Can not generate token' });
       } else {
         res.status(200);
         res.json({
-              token,
-              firstName: user.firstName,
-              lastName: user.lastName,
-              email: user.email
-            }
-        );
+          token,
+          firstName: user.firstName,
+          lastName: user.lastName,
+          email: user.email,
+        });
       }
     }
   );
@@ -134,7 +129,7 @@ exports.resetPassword = async (req, res) => {
     }
 
     const link = `${process.env.FRONTEND_URL}/reset-password?token=${token.token}&id=${token.id}`;
-    await sendEmail(user.email, 'Password Reset', link);
+    await resetPasswordEmail(user.email, link);
     return res.status(200).json({
       message:
         'If our services find a match with the address you entered, you will receive a reset link in a few moments.',
