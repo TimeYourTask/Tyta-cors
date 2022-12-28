@@ -36,7 +36,7 @@ exports.startTimeTask = async (req, res) => {
   let stopRequest = false;
 
   // Check if user have timer started
-  await checkUserTimerRunning(res.locals.user.id)
+  await checkUserTimerRunning(req.userId)
     .then(timerIsRunning => {
       if (timerIsRunning) {
         stopRequest = true;
@@ -138,8 +138,8 @@ exports.endTimeTask = (req, res) => {
     .catch((error) => res.status(400).json({ error }));
 };
 
-exports.getUserTimeTasks = async (_, res) => {
-  TimeTask.findOne({ assigned: res.locals.user.id }).sort({ createdAt: -1 })
+exports.getUserTimeTasks = async (req, res) => {
+  TimeTask.findOne({ assigned: req.userId }).sort({ createdAt: -1 })
     .then((timeTask) => {
       if (!timeTask) {
         return res.status(404).json({ message: 'Timer not found' });

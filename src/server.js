@@ -11,7 +11,6 @@ const projectRoute = require('./routes/projectRoute');
 const taskRoute = require('./routes/taskRoute');
 const timeTaskRoute = require('./routes/timeTaskRoute');
 const authRoute = require('./routes/authRoute');
-const timeTaskRoute = require('./routes/timeTaskRoute');
 
 const app = express();
 const PORT = process.env.SERVER_PORT;
