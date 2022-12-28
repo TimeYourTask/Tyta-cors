@@ -1,5 +1,5 @@
 const teamCtrl = require('../controllers/teamCtrl');
-const {authMiddleware} = require('../middleware/authMiddleware');
+const { authMiddleware } = require('../middleware/authMiddleware');
 
 module.exports = (app) => {
   app.post('/team', authMiddleware, teamCtrl.createTeam);
@@ -9,7 +9,15 @@ module.exports = (app) => {
   app.delete('/team/:teamId', authMiddleware, teamCtrl.deleteTeam);
   app.put('/team/:teamId', authMiddleware, teamCtrl.updateTeamName);
   app.put('/team/:teamId/user/', authMiddleware, teamCtrl.addUserToTeam);
-  app.delete('/team/:teamId/user/', authMiddleware, teamCtrl.removeUserFromTeam);
+  app.delete(
+    '/team/:teamId/user/',
+    authMiddleware,
+    teamCtrl.removeUserFromTeam
+  );
   app.put('/team/:teamId/project/', authMiddleware, teamCtrl.addProjectToTeam);
-  app.delete('/team/:teamId/project/', authMiddleware, teamCtrl.removeProjectFromTeam);
+  app.delete(
+    '/team/:teamId/project/',
+    authMiddleware,
+    teamCtrl.removeProjectFromTeam
+  );
 };

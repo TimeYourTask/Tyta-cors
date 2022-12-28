@@ -1,24 +1,64 @@
-const Project = require('../models/projectModel');
+const { isValidObjectId } = require('mongoose');
 
-exports.createProject = (req, res) => {
-  const newProject = new Project(req.body);
+const Project = require('../models/projectModel');
+const Team = require('../models/teamModel');
+
+exports.createProject = async (req, res) => {
+  const { teamId } = req.params;
+
+  if (!isValidObjectId(teamId)) {
+    return res
+      .status(400)
+      .json({ message: 'The information provided is incorrect!' });
+  }
+
+  const isTeamExist = await Team.findById(teamId);
+  if (!isTeamExist) {
+    return res
+      .status(400)
+      .json({ message: 'The information provided is incorrect!' });
+  }
+
+  const payload = {
+    ...req.body,
+    team: teamId,
+    users: [{ user: req.userId, role: 'admin' }],
+  };
+
+  const newProject = new Project(payload);
+
+  const editTeam = new Team(isTeamExist);
+  editTeam.projects.push(newProject.id);
+  editTeam.save();
+
   newProject
     .save()
-    .then(() =>
-      res.status(201).json({ message: 'Project Created!', data: newProject })
+    .then((project) =>
+      res.status(201).json({ message: 'Project Created!', data: project })
     )
     .catch((error) => res.status(500).json(error));
 };
 
-exports.getProjects = (req, res) => {
+exports.getAllProjects = (req, res) => {
   Project.find()
+    .populate(['users.user', 'team'])
     .then((projects) => res.status(200).json(projects))
     .catch((error) => res.status(400).json(error));
 };
 
 exports.getOneProject = (req, res) => {
   Project.findById(req.params.projectId)
+    .populate(['users.user', 'team'])
     .then((project) => res.status(200).json(project))
+    .catch((error) => res.status(400).json(error));
+};
+
+exports.getUserProjects = (req, res) => {
+  const { userId } = req.params;
+  const { team } = req.query;
+  Project.find({ 'users.user': userId, ...(team && { team }) })
+    .populate(['users.user', 'team'])
+    .then((projects) => res.status(200).json(projects))
     .catch((error) => res.status(400).json(error));
 };
 
@@ -53,34 +93,35 @@ exports.updateProjectInfos = (req, res) => {
 exports.addUserToProject = (req, res) => {
   // check if project exist
   Project.findById(req.params.projectId)
-    // eslint-disable-next-line consistent-return
     .then((project) => {
-      if (project) {
-        const user = project.users.find(
-          (u) => u.toString() === req.body.userId
-        );
-        if (user) {
-          return res.status(400).json({
-            message: 'User already in the project',
-          });
-        }
-        project.users.push({
-          id: req.body.userId,
-          role: req.body.role || 'user',
+      if (!project) {
+        res.status(404).json({
+          message: 'Project not found!',
         });
-        project
-          .save()
-          .then((newProject) =>
-            res.status(200).json({
-              message: 'User added to project!',
-              newProject,
-            })
-          )
-          .catch((error) => res.status(500).json(error));
       }
-      res.status(404).json({
-        message: 'Project not found!',
+
+      const user = project.users.find(
+        (u) => u.user.toString() === req.params.userId
+      );
+      if (user) {
+        return res.status(400).json({
+          message: 'User already in the project',
+        });
+      }
+
+      project.users.push({
+        user: req.params.userId,
+        role: req.body.role || 'user',
       });
+      return project
+        .save()
+        .then((newProject) =>
+          res.status(200).json({
+            message: 'User added to project!',
+            newProject,
+          })
+        )
+        .catch((error) => res.status(500).json(error));
     })
     .catch((error) =>
       res.status(401).json({ message: 'Invalid Request!', error })

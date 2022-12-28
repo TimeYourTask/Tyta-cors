@@ -104,6 +104,7 @@ exports.userLogin = async (req, res, next) => {
           firstName: user.firstName,
           lastName: user.lastName,
           email: user.email,
+          id: user.id,
         });
       }
     }
