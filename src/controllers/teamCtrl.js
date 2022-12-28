@@ -1,4 +1,8 @@
 const Team = require('../models/teamModel');
+const {
+  userAddedToTeamEmail,
+  userRemovedFromTeamEmail,
+} = require('../utils/mails');
 
 exports.createTeam = (req, res) => {
   const newTeam = new Team(req.body);
@@ -86,7 +90,10 @@ exports.addUserToTeam = (req, res) => {
         team.users.push(req.body);
         team
           .save()
-          .then(() => res.status(200).json({ message: 'User added to team!' }))
+          .then(() => {
+            userAddedToTeamEmail(user.email, user.firstName, team.name);
+            res.status(200).json({ message: 'User added to team!' });
+          })
           .catch((error) => res.status(500).json(error));
       } else {
         res.status(404).json({ message: 'Team not found!' });
@@ -110,12 +117,13 @@ exports.removeUserFromTeam = (req, res) => {
           );
           team
             .save()
-            .then((newTeam) =>
+            .then((newTeam) => {
+              userRemovedFromTeamEmail(user.email, user.firstName, team.name);
               res.status(200).json({
                 message: 'User removed from the team',
                 newTeam,
-              })
-            )
+              });
+            })
             .catch((error) => res.status(500).json(error));
         } else {
           res.status(404).json({

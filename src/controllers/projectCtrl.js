@@ -2,6 +2,10 @@ const { isValidObjectId } = require('mongoose');
 
 const Project = require('../models/projectModel');
 const Team = require('../models/teamModel');
+const {
+  userAddedToProjectEmail,
+  userRemovedFromProjectEmail,
+} = require('../utils/mails');
 
 exports.createProject = async (req, res) => {
   const { teamId } = req.params;
@@ -115,12 +119,13 @@ exports.addUserToProject = (req, res) => {
       });
       return project
         .save()
-        .then((newProject) =>
+        .then((newProject) => {
+          userAddedToProjectEmail(user.email, user.firstName, project.name);
           res.status(200).json({
             message: 'User added to project!',
             newProject,
-          })
-        )
+          });
+        })
         .catch((error) => res.status(500).json(error));
     })
     .catch((error) =>
@@ -144,12 +149,17 @@ exports.removeUserFromProject = (req, res) => {
           );
           project
             .save()
-            .then((newProject) =>
+            .then((newProject) => {
+              userRemovedFromProjectEmail(
+                user.email,
+                user.firstName,
+                project.name
+              );
               res.status(200).json({
                 message: 'User removed from the project',
                 newProject,
-              })
-            )
+              });
+            })
             .catch((error) => res.status(500).json(error));
         } else {
           res.status(404).json({
