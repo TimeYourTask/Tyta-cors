@@ -20,6 +20,11 @@ const timeTaskSchema = new Schema(
       type: Schema.Types.ObjectId,
       ref: 'Task',
       required: true
+    },
+    assigned: {
+      type: Schema.Types.ObjectId,
+      ref: 'User',
+      required: true
     }
   },
   {
