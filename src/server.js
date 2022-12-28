@@ -10,11 +10,8 @@ const teamRoute = require('./routes/teamRoute');
 const projectRoute = require('./routes/projectRoute');
 const taskRoute = require('./routes/taskRoute');
 const authRoute = require('./routes/authRoute');
-<<<<<<< HEAD
 const timeTaskRoute = require('./routes/timeTaskRoute');
 const resetPasswordRoute = require('./routes/resetPasswordRoute');
-=======
->>>>>>> 24d3de6 (refactor(router): extract login and register in new auth route manager)
 
 const app = express();
 const PORT = process.env.SERVER_PORT;
@@ -33,10 +30,7 @@ mongoose
 
     userRoute(app);
     authRoute(app);
-<<<<<<< HEAD
     resetPasswordRoute(app);
-=======
->>>>>>> 24d3de6 (refactor(router): extract login and register in new auth route manager)
     teamRoute(app);
     projectRoute(app);
     taskRoute(app);
