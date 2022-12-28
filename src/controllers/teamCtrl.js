@@ -1,4 +1,8 @@
 const Team = require('../models/teamModel');
+const {
+  userAddedToTeamEmail,
+  userRemovedFromTeamEmail,
+} = require('../utils/mails');
 
 exports.createTeam = async (req, res) => {
   const payload = {
@@ -10,14 +14,12 @@ exports.createTeam = async (req, res) => {
 
   team
     .save()
-    .then((project) =>
-      res.status(201).json({ message: 'Team Created!', data: team })
-    )
+    .then(() => res.status(201).json({ message: 'Team Created!', data: team }))
     .catch((error) => res.status(500).json(error));
 };
 
 exports.getTeams = (req, res) => {
-  //get teams and replace user by full user
+  // get teams and replace user by full user
   Team.find()
     .populate(['users.user', 'projects'])
     .then((teams) => {
@@ -66,11 +68,11 @@ exports.updateTeamName = (req, res) => {
 };
 
 exports.addUserToTeam = (req, res) => {
-  //check if user not in the team
+  // check if user not in the team
   Team.findById(req.params.teamId)
     .then((team) => {
       if (team) {
-        const user = team.users.find((user) => user.user == req.body.user);
+        const user = team.users.find((user) => user.user === req.body.user);
         if (user) {
           return res.status(400).json({
             message: 'User already in the team',
@@ -79,7 +81,10 @@ exports.addUserToTeam = (req, res) => {
         team.users.push(req.body);
         team
           .save()
-          .then(() => res.status(200).json({ message: 'User added to team!' }))
+          .then(() => {
+            userAddedToTeamEmail(user.email, user.firstName, team.name);
+            res.status(200).json({ message: 'User added to team!' });
+          })
           .catch((error) => res.status(500).json(error));
       } else {
         res.status(404).json({ message: 'Team not found!' });
@@ -89,7 +94,7 @@ exports.addUserToTeam = (req, res) => {
 };
 
 exports.removeUserFromTeam = (req, res) => {
-  //check if user in team
+  // check if user in team
   Team.findById(req.params.teamId)
     .then((team) => {
       if (team) {
@@ -97,18 +102,19 @@ exports.removeUserFromTeam = (req, res) => {
           (user) => user.user.toString() === req.body.user
         );
         if (user) {
-          //remove user from team
+          // remove user from team
           team.users = team.users.filter(
             (user) => user.user.toString() !== req.body.user
           );
           team
             .save()
-            .then((newTeam) =>
+            .then((newTeam) => {
+              userRemovedFromTeamEmail(user.email, user.firstName, team.name);
               res.status(200).json({
                 message: 'User removed from the team',
                 newTeam,
-              })
-            )
+              });
+            })
             .catch((error) => res.status(500).json(error));
         } else {
           res.status(404).json({
@@ -127,7 +133,7 @@ exports.removeUserFromTeam = (req, res) => {
 };
 
 exports.addProjectToTeam = (req, res) => {
-  //check if project not in team
+  // check if project not in team
   Team.findById(req.params.teamId)
     .then((team) => {
       if (team) {
@@ -158,7 +164,7 @@ exports.addProjectToTeam = (req, res) => {
 };
 
 exports.removeProjectFromTeam = (req, res) => {
-  //check if project in team
+  // check if project in team
   Team.findById(req.params.teamId)
     .then((team) => {
       if (team) {
@@ -166,7 +172,7 @@ exports.removeProjectFromTeam = (req, res) => {
           (project) => project.toString() === req.body.projectId
         );
         if (project) {
-          //remove project from team
+          // remove project from team
           team.projects = team.projects.filter(
             (project) => project.toString() !== req.body.projectId
           );

@@ -1,5 +1,13 @@
 const mongoose = require('mongoose');
+// eslint-disable-next-line node/no-unpublished-require
 const request = require('supertest');
+const {
+  beforeEach,
+  afterEach,
+  describe,
+  expect,
+  it,
+} = require('@jest/globals');
 const app = require('../src/app');
 
 require('dotenv').config();

@@ -21,13 +21,10 @@
     "no-plusplus": "off",
     "no-process-exit": "off",
     "class-methods-use-this": "off",
-    "node/no-unpublished-require": [
-      "error",
-      {
-        "allowModules": [],
-        "convertPath": null,
-        "tryExtensions": [".js", ".json", ".node"]
-      }
-    ]
+    "node/no-unpublished-require": "error",
+    "no-shadow": "off",
+    "no-param-reassign": "off",
+    "node/no-unsupported-features/es-syntax": "off",
+    "consistent-return": "off"
   }
 }

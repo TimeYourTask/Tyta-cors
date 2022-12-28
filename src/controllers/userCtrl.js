@@ -4,7 +4,7 @@ const crypto = require('crypto');
 const User = require('../models/userModel');
 const Token = require('../models/tokenModel');
 
-const sendEmail = require('../utils/nodemailer');
+const { welcomeEmail, resetPasswordEmail } = require('../utils/mails');
 
 exports.userRegister = (req, res) => {
   const newUser = new User(req.body);
@@ -18,12 +18,8 @@ exports.userRegister = (req, res) => {
     return newUser
       .save()
       .then(() => {
-        sendEmail(
-          newUser.email,
-          'Welcome to the app!',
-          'Thank you for registering to our app!'
-        );
-        res.status(201).json({ message: 'User created!', newUser });
+        welcomeEmail(newUser.email, newUser.firstName);
+        res.status(201).json({ message: 'User created! :', newUser });
       })
       .catch((error) => res.status(500).json(error));
   });
@@ -42,7 +38,7 @@ exports.getOneUser = (req, res) => {
 };
 
 exports.deleteUser = (req, res) => {
-  //check if user exist
+  // check if user exist
   User.findById(req.params.userId)
     .then((user) => {
       if (user) {
@@ -58,7 +54,7 @@ exports.deleteUser = (req, res) => {
 };
 
 exports.updateUser = (req, res) => {
-  //check if user exist
+  // check if user exist
   User.findById(req.params.userId)
     .then((user) => {
       if (user) {
@@ -73,7 +69,7 @@ exports.updateUser = (req, res) => {
     .catch((error) => res.status(500).json(error));
 };
 
-exports.userLogin = async (req, res, next) => {
+exports.userLogin = async (req, res) => {
   const user = await User.findOne({ email: req.body.email });
   if (!user) {
     res.status(500).json({ message: 'User not exist' });
@@ -99,7 +95,6 @@ exports.userLogin = async (req, res, next) => {
     (error, token) => {
       if (error) {
         res.status(500);
-        console.log(error);
         res.json({ message: 'Can not generate token' });
       } else {
         res.status(200);
@@ -134,7 +129,7 @@ exports.resetPassword = async (req, res) => {
     }
 
     const link = `${process.env.FRONTEND_URL}/reset-password?token=${token.token}&id=${token.id}`;
-    await sendEmail(user.email, 'Password Reset', link);
+    await resetPasswordEmail(user.email, link);
     return res.status(200).json({
       message:
         'If our services find a match with the address you entered, you will receive a reset link in a few moments.',
