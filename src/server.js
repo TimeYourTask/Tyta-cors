@@ -12,7 +12,7 @@ const taskRoute = require('./routes/taskRoute');
 const authRoute = require('./routes/authRoute');
 
 const app = express();
-const PORT = process.env.SERVER_PORT;
+const { PORT } = process.env;
 const corsOptions = {
   origin: process.env.FRONTEND_URL,
   optionsSuccessStatus: 200,
