@@ -8,24 +8,24 @@ const timeTaskSchema = new Schema(
       {
         start_date: {
           type: Date,
-          default: new Date().toISOString()
+          default: new Date().toISOString(),
         },
         end_date: {
           type: Date,
-          default: null
+          default: null,
         },
       },
     ],
     task: {
       type: Schema.Types.ObjectId,
       ref: 'Task',
-      required: true
+      required: true,
     },
     assigned: {
       type: Schema.Types.ObjectId,
       ref: 'User',
-      required: true
-    }
+      required: true,
+    },
   },
   {
     timestamps: true,

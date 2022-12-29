@@ -6,7 +6,7 @@ exports.authMiddleware = (req, res, next) => {
   const token = req.headers.authorization;
 
   if (token !== undefined) {
-    jwt.verify(token, jwtKey, (error, result) => {
+    jwt.verify(token, jwtKey, (error) => {
       if (error) {
         res.status(403);
         res.json({ message: 'Access Forbidden : Invalid Token' });

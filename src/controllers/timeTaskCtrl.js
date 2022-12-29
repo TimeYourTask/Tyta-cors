@@ -1,8 +1,8 @@
 const TimeTask = require('../models/timeTaskModel');
 const Task = require('../models/taskModel');
 
-const getTimeTask = (taskId) => {
-  return new Promise((resolve, reject) => {
+const getTimeTask = (taskId) =>
+  new Promise((resolve, reject) => {
     TimeTask.findOne({ task: taskId })
       .then((timeTask) => {
         if (!timeTask) {
@@ -12,11 +12,11 @@ const getTimeTask = (taskId) => {
       })
       .catch((error) => reject(error));
   });
-}
 
-const checkUserTimerRunning = (userId) => {
-  return new Promise((resolve, reject) => {
-    TimeTask.findOne({ assigned: userId }).sort({ createdAt: -1 })
+const checkUserTimerRunning = (userId) =>
+  new Promise((resolve, reject) => {
+    TimeTask.findOne({ assigned: userId })
+      .sort({ createdAt: -1 })
       .then((timeTask) => {
         if (!timeTask) {
           resolve(false);
@@ -25,11 +25,10 @@ const checkUserTimerRunning = (userId) => {
         if (!timeTask.time[timeTask.time.length - 1].end_date) {
           resolve(true);
         }
-        resolve(false)
+        resolve(false);
       })
       .catch((error) => reject(error));
   });
-}
 
 exports.startTimeTask = async (req, res) => {
   const taskId = req.params.task_id;
@@ -37,13 +36,15 @@ exports.startTimeTask = async (req, res) => {
 
   // Check if user have timer started
   await checkUserTimerRunning(req.userId)
-    .then(timerIsRunning => {
+    .then((timerIsRunning) => {
       if (timerIsRunning) {
         stopRequest = true;
-        res.status(400).json({ message: 'User cant start two tasks at same time' })
+        res
+          .status(400)
+          .json({ message: 'User cant start two tasks at same time' });
       }
     })
-    .catch(error => res.status(400).json({ error }))
+    .catch((error) => res.status(400).json({ error }));
 
   if (stopRequest) return;
   getTimeTask(taskId)
@@ -51,7 +52,6 @@ exports.startTimeTask = async (req, res) => {
       // data.message mean timeTask not found, so create it
       // else verify process for start a new timer
       if (data.message) {
-
         // Find task with id for get user assigned value
         Task.findById(taskId)
           .then((task) => {
@@ -59,21 +59,31 @@ exports.startTimeTask = async (req, res) => {
               return res.status(404).json({ message: 'Task not found' });
             }
             if (!task.assigned) {
-              return res.status(400).json({ message: 'Task doesn\'t have user assigned' });
+              return res
+                .status(400)
+                .json({ message: "Task doesn't have user assigned" });
             }
             // Create new timer
-            const newTimeTask = new TimeTask({ task: taskId, assigned: task.assigned, time: {} });
+            const newTimeTask = new TimeTask({
+              task: taskId,
+              assigned: task.assigned,
+              time: {},
+            });
             newTimeTask
               .save()
-              .then(() => res.status(201).json({ message: 'Timer created', newTimeTask }))
+              .then(() =>
+                res.status(201).json({ message: 'Timer created', newTimeTask })
+              )
               .catch((error) => res.status(500).json({ error }));
           })
           .catch((error) => res.status(400).json({ error }));
       } else {
-        let lastTime = data.timeTask.time[data.timeTask.time.length - 1];
+        const lastTime = data.timeTask.time[data.timeTask.time.length - 1];
         // If end_date is null so a timer is running
-        if (!(lastTime.end_date)) {
-          return res.status(400).json({ message: 'A timer is running on this task, end the timer and retry' })
+        if (!lastTime.end_date) {
+          return res.status(400).json({
+            message: 'A timer is running on this task, end the timer and retry',
+          });
         }
 
         // Else init a new timer
@@ -81,10 +91,10 @@ exports.startTimeTask = async (req, res) => {
           time: [
             ...data.timeTask.time,
             {
-              start_date: new Date().toISOString()
-            }
-          ]
-        }
+              start_date: new Date().toISOString(),
+            },
+          ],
+        };
 
         // Update TimeTask with the new timer
         TimeTask.findByIdAndUpdate(data.timeTask.id, updTime, { new: true })
@@ -92,14 +102,15 @@ exports.startTimeTask = async (req, res) => {
             if (!result) {
               return res.status(404).json({ message: 'Timer not found' });
             }
-            return res
-              .status(200)
-              .json({ message: 'The timer has been modified correclty', result });
+            return res.status(200).json({
+              message: 'The timer has been modified correclty',
+              result,
+            });
           })
           .catch((error) => res.status(400).json({ error }));
       }
     })
-    .catch(error => res.status(400).json({ error }))
+    .catch((error) => res.status(400).json({ error }));
 };
 
 exports.endTimeTask = (req, res) => {
@@ -107,22 +118,22 @@ exports.endTimeTask = (req, res) => {
     .then((data) => {
       // data.message mean timeTask not found, so return error
       if (data.message) {
-        return res.status(404).json({ message: 'Timer not found, start a new timer for init' });
+        return res
+          .status(404)
+          .json({ message: 'Timer not found, start a new timer for init' });
       }
 
-      let lastTime = data.timeTask.time[data.timeTask.time.length - 1];
+      const lastTime = data.timeTask.time[data.timeTask.time.length - 1];
       // If end_date is true, no timer is running and return error message
       if (lastTime.end_date) {
-        return res.status(400).json({ message: 'No timer started' })
+        return res.status(400).json({ message: 'No timer started' });
       }
 
       // Else stop current timer is running
       lastTime.end_date = new Date().toISOString();
-      let updTime = {
-        time: [
-          ...data.timeTask.time
-        ]
-      }
+      const updTime = {
+        time: [...data.timeTask.time],
+      };
 
       TimeTask.findByIdAndUpdate(data.timeTask.id, updTime, { new: true })
         .then((result) => {
@@ -139,7 +150,8 @@ exports.endTimeTask = (req, res) => {
 };
 
 exports.getUserTimeTasks = async (req, res) => {
-  TimeTask.findOne({ assigned: req.userId }).sort({ createdAt: -1 })
+  TimeTask.findOne({ assigned: req.userId })
+    .sort({ createdAt: -1 })
     .then((timeTask) => {
       if (!timeTask) {
         return res.status(404).json({ message: 'Timer not found' });
@@ -150,7 +162,7 @@ exports.getUserTimeTasks = async (req, res) => {
       }
       return res.status(200).json({ timeTask });
     })
-    .catch((error) => reject(error));
+    .catch((error) => res.status(400).json({ error }));
 };
 
 exports.getTimeTasks = (_, res) => {
@@ -197,22 +209,23 @@ exports.updateTimeTask = (req, res) => {
       if (data.message) {
         return res.status(404).json({ message: data.message });
       }
-      let timer = data.timeTask.time;
+      const timer = data.timeTask.time;
       // Search specific time with id
-      const timeIndex = timer.findIndex(time => time.id === req.params.time_id)
+      const timeIndex = timer.findIndex(
+        (time) => time.id === req.params.time_id
+      );
 
       // If timeIndex if false => not found
-      if (timeIndex === -1) return res.status(404).json({ message: 'Time not found' });
+      if (timeIndex === -1)
+        return res.status(404).json({ message: 'Time not found' });
 
       // Modify data of timer with index
       timer[timeIndex].start_date = req.body.start_date;
       timer[timeIndex].end_date = req.body.end_date;
 
       const updTime = {
-        time: [
-          ...timer
-        ]
-      }
+        time: [...timer],
+      };
       // Update timer with modified data
       TimeTask.findByIdAndUpdate(data.timeTask.id, updTime, { new: true })
         .then((result) => {
@@ -227,6 +240,6 @@ exports.updateTimeTask = (req, res) => {
     })
     .catch((error) => {
       console.log(error);
-      res.status(400).json({ error })
+      res.status(400).json({ error });
     });
 };
