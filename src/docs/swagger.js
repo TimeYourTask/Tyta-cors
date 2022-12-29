@@ -1966,6 +1966,73 @@ module.exports = {
             Authentification: [],
           },
         ],
+        parameters: [
+          {
+            in: 'body',
+            name: 'body',
+            schema: {
+              properties: {
+                project_id: {
+                  type: 'string',
+                  example: 'Test project 2',
+                },
+                title: {
+                  type: 'string',
+                  example: 'TASK X',
+                },
+              },
+            },
+          },
+        ],
+        responses: {
+          200: {
+            description: 'Success',
+            schema: {
+              properties: {
+                message: {
+                  type: 'string',
+                  example: 'Task Created!',
+                },
+                newTask: {
+                  type: 'object',
+                  properties: {
+                    title: {
+                      type: 'string',
+                      example: 'TASK 2',
+                    },
+                    project: {
+                      type: 'string',
+                      example: '63ad84d7d008827135280989',
+                    },
+                    _id: {
+                      type: 'string',
+                      example: '63adae661226f5320b31f30b',
+                    },
+                    createdAt: {
+                      type: 'date-time',
+                      example: '2022-12-29T15:12:38.765Z',
+                    },
+                    updatedAt: {
+                      type: 'date-time',
+                      example: '2022-12-29T15:12:38.765Z',
+                    },
+                  },
+                },
+              },
+            },
+          },
+          400: {
+            description: 'Error',
+            schema: {
+              properties: {
+                message: {
+                  type: 'string',
+                  example: 'Something went wrong!',
+                },
+              },
+            },
+          },
+        },
       },
     },
     '/tasks': {
@@ -1978,6 +2045,30 @@ module.exports = {
             Authentification: [],
           },
         ],
+        responses: {
+          200: {
+            description: 'Success',
+            schema: {
+              properties: {
+                tasks: {
+                  type: 'array',
+                  example: '[]',
+                },
+              },
+            },
+          },
+          400: {
+            description: 'Error',
+            schema: {
+              properties: {
+                message: {
+                  type: 'string',
+                  example: 'Something went wrong!',
+                },
+              },
+            },
+          },
+        },
       },
     },
     '/task/{task_id}': {
@@ -1990,6 +2081,73 @@ module.exports = {
             Authentification: [],
           },
         ],
+        parameters: [
+          {
+            in: 'path',
+            name: 'task_id',
+            schema: {
+              type: 'string',
+            },
+            required: true,
+            description: 'The task ID',
+          },
+        ],
+        responses: {
+          200: {
+            description: 'Success',
+            schema: {
+              properties: {
+                task: {
+                  type: 'object',
+                  properties: {
+                    _id: {
+                      type: 'string',
+                      example: '63adae661226f5320b31f30b',
+                    },
+                    title: {
+                      type: 'string',
+                      example: 'TASK 2',
+                    },
+                    project: {
+                      type: 'string',
+                      example: '63ad84d7d008827135280989',
+                    },
+                    createdAt: {
+                      type: 'date-time',
+                      example: '2022-12-29T15:12:38.765Z',
+                    },
+                    updatedAt: {
+                      type: 'date-time',
+                      example: '2022-12-29T15:12:38.765Z',
+                    },
+                  },
+                },
+              },
+            },
+          },
+          400: {
+            description: 'Error',
+            schema: {
+              properties: {
+                message: {
+                  type: 'string',
+                  example: 'Something went wrong!',
+                },
+              },
+            },
+          },
+          404: {
+            description: 'Error',
+            schema: {
+              properties: {
+                message: {
+                  type: 'string',
+                  example: 'Task not found!',
+                },
+              },
+            },
+          },
+        },
       },
       put: {
         tags: ['Tasks'],
@@ -2000,6 +2158,97 @@ module.exports = {
             Authentification: [],
           },
         ],
+        parameters: [
+          {
+            in: 'path',
+            name: 'task_id',
+            schema: {
+              type: 'string',
+            },
+            required: true,
+            description: 'The task ID',
+          },
+          {
+            in: 'body',
+            name: 'body',
+            schema: {
+              properties: {
+                title: {
+                  type: 'string',
+                  example: 'new title',
+                },
+                assigned: {
+                  type: 'string',
+                  example: '{{user_id}}',
+                },
+              },
+            },
+          },
+        ],
+        responses: {
+          200: {
+            description: 'Success',
+            schema: {
+              properties: {
+                message: {
+                  type: 'string',
+                  example: 'The Task has been modified correclty!',
+                },
+                task: {
+                  type: 'object',
+                  properties: {
+                    _id: {
+                      type: 'string',
+                      example: '63adae661226f5320b31f30b',
+                    },
+                    title: {
+                      type: 'string',
+                      example: 'New',
+                    },
+                    project: {
+                      type: 'string',
+                      example: '63ad84d7d008827135280989',
+                    },
+                    createdAt: {
+                      type: 'date-time',
+                      example: '2022-12-29T15:12:38.765Z',
+                    },
+                    updatedAt: {
+                      type: 'date-time',
+                      example: '2022-12-29T15:28:36.660Z',
+                    },
+                    assigned: {
+                      type: 'string',
+                      example: '{{user_id}}',
+                    },
+                  },
+                },
+              },
+            },
+          },
+          400: {
+            description: 'Error',
+            schema: {
+              properties: {
+                message: {
+                  type: 'string',
+                  example: 'Invalid Request!',
+                },
+              },
+            },
+          },
+          404: {
+            description: 'Error',
+            schema: {
+              properties: {
+                message: {
+                  type: 'string',
+                  example: 'No items updated : task not found!',
+                },
+              },
+            },
+          },
+        },
       },
       delete: {
         tags: ['Tasks'],
@@ -2010,6 +2259,52 @@ module.exports = {
             Authentification: [],
           },
         ],
+        parameters: [
+          {
+            in: 'path',
+            name: 'task_id',
+            schema: {
+              type: 'string',
+            },
+            required: true,
+            description: 'The task ID',
+          },
+        ],
+        responses: {
+          200: {
+            description: 'Success',
+            schema: {
+              properties: {
+                message: {
+                  type: 'string',
+                  example: 'Task deleted!',
+                },
+              },
+            },
+          },
+          400: {
+            description: 'Error',
+            schema: {
+              properties: {
+                message: {
+                  type: 'string',
+                  example: 'Invalid Request!',
+                },
+              },
+            },
+          },
+          404: {
+            description: 'Error',
+            schema: {
+              properties: {
+                message: {
+                  type: 'string',
+                  example: 'No items deleted: task not found!',
+                },
+              },
+            },
+          },
+        },
       },
     },
     // Task Time
