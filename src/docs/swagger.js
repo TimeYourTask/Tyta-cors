@@ -2308,40 +2308,40 @@ module.exports = {
       },
     },
     // Task Time
-    '/task/{task_id}/start': {
-      post: {
-        tags: ['Task Time'],
-        summary: 'Start a Task timer',
-        description: 'Start a Task timer',
-        security: [
-          {
-            Authentification: [],
-          },
-        ],
-      },
-    },
-    '/task/{task_id}/end': {
-      post: {
-        tags: ['Task Time'],
-        summary: 'End a Task timer',
-        description: 'End a Task timer',
-        security: [
-          {
-            Authentification: [],
-          },
-        ],
-      },
-    },
     '/timers': {
       get: {
         tags: ['Task Time'],
-        summary: 'End a Task timer',
-        description: 'End a Task timer',
+        summary: 'Get timers',
+        description: 'Get timers',
         security: [
           {
             Authentification: [],
           },
         ],
+        responses: {
+          200: {
+            description: 'Success',
+            schema: {
+              properties: {
+                TimeTasks: {
+                  type: 'array',
+                  example: '[]',
+                },
+              },
+            },
+          },
+          400: {
+            description: 'Error',
+            schema: {
+              properties: {
+                message: {
+                  type: 'string',
+                  example: 'Something went wrong!',
+                },
+              },
+            },
+          },
+        },
       },
     },
     '/task/user/timer': {
@@ -2354,6 +2354,173 @@ module.exports = {
             Authentification: [],
           },
         ],
+        responses: {
+          200: {
+            description: 'Success',
+            schema: {
+              properties: {
+                timeTask: {
+                  type: 'object',
+                  example: {},
+                },
+              },
+            },
+          },
+          400: {
+            description: 'Error',
+            schema: {
+              properties: {
+                message: {
+                  type: 'string',
+                  example: 'Timer not started!',
+                },
+              },
+            },
+          },
+          404: {
+            description: 'Error',
+            schema: {
+              properties: {
+                message: {
+                  type: 'string',
+                  example: 'Timer not found!',
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+    '/task/{task_id}/start': {
+      post: {
+        tags: ['Task Time'],
+        summary: 'Start a Task timer',
+        description: 'Start a Task timer',
+        security: [
+          {
+            Authentification: [],
+          },
+        ],
+        parameters: [
+          {
+            in: 'path',
+            name: 'task_id',
+            schema: {
+              type: 'string',
+            },
+            required: true,
+            description: 'The task ID',
+          },
+        ],
+        responses: {
+          201: {
+            description: 'Success',
+            schema: {
+              properties: {
+                message: {
+                  type: 'string',
+                  example: 'Timer created',
+                },
+              },
+            },
+          },
+          400: {
+            description: 'Error',
+            schema: {
+              properties: {
+                message: {
+                  type: 'string',
+                  example:
+                    'A timer is already running on this task or task does not have user assigned',
+                },
+              },
+            },
+          },
+          404: {
+            description: 'Error',
+            schema: {
+              properties: {
+                message: {
+                  type: 'string',
+                  example: 'User / Task not found!',
+                },
+              },
+            },
+          },
+          500: {
+            description: 'Error',
+            schema: {
+              properties: {
+                message: {
+                  type: 'string',
+                  example: 'Something went wrong!',
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+    '/task/{task_id}/end': {
+      post: {
+        tags: ['Task Time'],
+        summary: 'End a Task timer',
+        description: 'End a Task timer',
+        security: [
+          {
+            Authentification: [],
+          },
+        ],
+        parameters: [
+          {
+            in: 'path',
+            name: 'task_id',
+            schema: {
+              type: 'string',
+            },
+            required: true,
+            description: 'The task ID',
+          },
+        ],
+        responses: {
+          200: {
+            description: 'Success',
+            schema: {
+              properties: {
+                message: {
+                  type: 'string',
+                  example: 'The timer has been modified correclty',
+                },
+                result: {
+                  type: 'object',
+                  properties: {},
+                },
+              },
+            },
+          },
+          400: {
+            description: 'Error',
+            schema: {
+              properties: {
+                message: {
+                  type: 'string',
+                  example: 'No timer started',
+                },
+              },
+            },
+          },
+          404: {
+            description: 'Error',
+            schema: {
+              properties: {
+                message: {
+                  type: 'string',
+                  example: 'Timer not found, start a new timer for init',
+                },
+              },
+            },
+          },
+        },
       },
     },
     '/task/{task_id}/timer': {
@@ -2366,6 +2533,41 @@ module.exports = {
             Authentification: [],
           },
         ],
+        parameters: [
+          {
+            in: 'path',
+            name: 'task_id',
+            schema: {
+              type: 'string',
+            },
+            required: true,
+            description: 'The task ID',
+          },
+        ],
+        responses: {
+          200: {
+            description: 'Success',
+            schema: {
+              properties: {
+                timeTask: {
+                  type: 'object',
+                  example: {},
+                },
+              },
+            },
+          },
+          404: {
+            description: 'Error',
+            schema: {
+              properties: {
+                message: {
+                  type: 'string',
+                  example: 'Timer not found!',
+                },
+              },
+            },
+          },
+        },
       },
       delete: {
         tags: ['Task Time'],
@@ -2376,10 +2578,56 @@ module.exports = {
             Authentification: [],
           },
         ],
+        parameters: [
+          {
+            in: 'path',
+            name: 'task_id',
+            schema: {
+              type: 'string',
+            },
+            required: true,
+            description: 'The task ID',
+          },
+        ],
+        responses: {
+          200: {
+            description: 'Success',
+            schema: {
+              properties: {
+                message: {
+                  type: 'string',
+                  example: 'Timer deleted',
+                },
+              },
+            },
+          },
+          400: {
+            description: 'Error',
+            schema: {
+              properties: {
+                message: {
+                  type: 'string',
+                  example: 'Something went wrong!',
+                },
+              },
+            },
+          },
+          404: {
+            description: 'Error',
+            schema: {
+              properties: {
+                message: {
+                  type: 'string',
+                  example: 'Timer not found!',
+                },
+              },
+            },
+          },
+        },
       },
     },
     '/task/{task_id}/timer/{time_id}': {
-      get: {
+      put: {
         tags: ['Task Time'],
         summary: 'Update timer of a task',
         description: 'Update timer of a task',
@@ -2388,6 +2636,83 @@ module.exports = {
             Authentification: [],
           },
         ],
+        parameters: [
+          {
+            in: 'path',
+            name: 'task_id',
+            schema: {
+              type: 'string',
+            },
+            required: true,
+            description: 'The task ID',
+          },
+          {
+            in: 'path',
+            name: 'time_id',
+            schema: {
+              type: 'string',
+            },
+            required: true,
+            description: 'The time ID',
+          },
+          {
+            in: 'body',
+            name: 'body',
+            required: true,
+            schema: {
+              required: ['start_date', 'end_date'],
+              properties: {
+                start_date: {
+                  type: 'string',
+                  example: '2022-12-27T15:44:54.004Z',
+                },
+                end_date: {
+                  type: 'string',
+                  example: '2022-12-27T16:44:54.004Z',
+                },
+              },
+            },
+          },
+        ],
+        responses: {
+          200: {
+            description: 'Success',
+            schema: {
+              properties: {
+                message: {
+                  type: 'string',
+                  example: 'The timer has been modified correclty',
+                },
+                result: {
+                  type: 'object',
+                  properties: {},
+                },
+              },
+            },
+          },
+          400: {
+            description: 'Error',
+            schema: {
+              properties: {
+                message: {
+                  type: 'string',
+                  example: 'Missing data',
+                },
+              },
+            },
+          },
+          404: {
+            description: 'Error',
+            schema: {
+              properties: {
+                message: {
+                  type: 'string',
+                  example: 'Missing data',
+                },
+              },
+            },
+          },
+        },
       },
     },
   },
