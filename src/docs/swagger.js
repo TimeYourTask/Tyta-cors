@@ -100,7 +100,7 @@ module.exports = {
       post: {
         tags: ['Auth'],
         summary: 'Log in the app and get API Token',
-        description: '',
+        description: 'Log in the app and get API Token',
         parameters: [
           {
             in: 'body',
@@ -157,7 +157,7 @@ module.exports = {
       post: {
         tags: ['Auth'],
         summary: 'Reset Password when forgotten',
-        description: '',
+        description: 'Reset Password when forgotten',
         parameters: [
           {
             in: 'body',
@@ -206,7 +206,7 @@ module.exports = {
       post: {
         tags: ['Auth'],
         summary: 'Change your password',
-        description: '',
+        description: 'Change your password',
         parameters: [
           {
             in: 'body',
@@ -936,7 +936,6 @@ module.exports = {
         },
       },
     },
-
     'team/{team_id}/user/': {
       put: {
         tags: ['Teams'],
@@ -1306,18 +1305,189 @@ module.exports = {
             Authentification: [],
           },
         ],
+        parameters: [
+          {
+            in: 'path',
+            name: 'team_id',
+            schema: {
+              type: 'string',
+            },
+            required: true,
+            description: 'The team ID',
+          },
+          {
+            in: 'body',
+            name: 'body',
+            schema: {
+              properties: {
+                name: {
+                  type: 'string',
+                  example: 'Test project 2',
+                },
+                description: {
+                  type: 'string',
+                  example: 'Beautiful project',
+                },
+                users: {
+                  type: 'array',
+                  items: {
+                    type: 'object',
+                    properties: {
+                      id: {
+                        type: 'string',
+                        example: '{{user_id}}',
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
+        ],
+        responses: {
+          200: {
+            description: 'Success',
+            schema: {
+              properties: {
+                message: {
+                  type: 'string',
+                  example: 'Project Created!',
+                },
+                data: {
+                  type: 'object',
+                  properties: {
+                    name: {
+                      type: 'string',
+                      example: 'Test un beau projet',
+                    },
+                    description: {
+                      type: 'string',
+                      example: 'Beautiful project',
+                    },
+                    users: { type: 'array', example: [] },
+                    team: {
+                      type: 'string',
+                      example: '63ad67d4a8b21296142ff048',
+                    },
+                    _id: {
+                      type: 'string',
+                      example: '63ad84d7d008827135280989',
+                    },
+                    createdAt: {
+                      type: 'date-time',
+                      example: '2022-12-29T12:15:19.041Z',
+                    },
+                    updatedAt: {
+                      type: 'date-time',
+                      example: '2022-12-29T12:15:19.041Z',
+                    },
+                  },
+                },
+              },
+            },
+          },
+          400: {
+            description: 'Error',
+            schema: {
+              properties: {
+                message: {
+                  type: 'string',
+                  example: 'The information provided is incorrect!',
+                },
+              },
+            },
+          },
+          500: {
+            description: 'Error',
+            schema: {
+              properties: {
+                message: {
+                  type: 'string',
+                  example: 'Something went wrong!',
+                },
+              },
+            },
+          },
+        },
       },
     },
     '/admin/projects': {
       get: {
         tags: ['Projects'],
-        summary: 'Get all admin of projects',
-        description: 'Get all admin of projects',
+        summary: 'Get every project where i am administrator',
+        description: 'Get every project where i am administrator',
         security: [
           {
             Authentification: [],
           },
         ],
+        responses: {
+          200: {
+            description: 'Success',
+            schema: {
+              properties: {
+                data: {
+                  type: 'object',
+                  properties: {
+                    _id: {
+                      type: 'string',
+                      example: '63ad84d7d008827135280989',
+                    },
+                    name: {
+                      type: 'string',
+                      example: 'Test un beau projet',
+                    },
+                    description: {
+                      type: 'string',
+                      example: 'Beautiful project',
+                    },
+                    users: { type: 'array', example: [] },
+                    team: {
+                      type: 'object',
+                      properties: {
+                        _id: {
+                          type: '',
+                          example: '63ad67d4a8b21296142ff048',
+                        },
+                        name: {
+                          type: '',
+                          example: 'KEKBody',
+                        },
+                        users: {
+                          type: 'array',
+                          example: [],
+                        },
+                        projects: {
+                          type: 'array',
+                          example: ['63ad84d7d008827135280989'],
+                        },
+                      },
+                    },
+                    createdAt: {
+                      type: 'date-time',
+                      example: '2022-12-29T12:15:19.041Z',
+                    },
+                    updatedAt: {
+                      type: 'date-time',
+                      example: '2022-12-29T12:15:19.041Z',
+                    },
+                  },
+                },
+              },
+            },
+          },
+          400: {
+            description: 'Error',
+            schema: {
+              properties: {
+                message: {
+                  type: 'string',
+                  example: 'Something went wrong!',
+                },
+              },
+            },
+          },
+        },
       },
     },
     '/project/{project_id}': {
@@ -1330,6 +1500,84 @@ module.exports = {
             Authentification: [],
           },
         ],
+        parameters: [
+          {
+            in: 'path',
+            name: 'project_id',
+            schema: {
+              type: 'string',
+            },
+            required: true,
+            description: 'The project ID',
+          },
+        ],
+        responses: {
+          200: {
+            description: 'Success',
+            schema: {
+              properties: {
+                data: {
+                  type: 'object',
+                  properties: {
+                    _id: {
+                      type: 'string',
+                      example: '63ad84d7d008827135280989',
+                    },
+                    name: {
+                      type: 'string',
+                      example: 'Test un beau projet',
+                    },
+                    description: {
+                      type: 'string',
+                      example: 'Beautiful project',
+                    },
+                    users: { type: 'array', example: [] },
+                    team: {
+                      type: 'object',
+                      properties: {
+                        _id: {
+                          type: '',
+                          example: '63ad67d4a8b21296142ff048',
+                        },
+                        name: {
+                          type: '',
+                          example: 'KEKBody',
+                        },
+                        users: {
+                          type: 'array',
+                          example: [],
+                        },
+                        projects: {
+                          type: 'array',
+                          example: ['63ad84d7d008827135280989'],
+                        },
+                      },
+                    },
+                    createdAt: {
+                      type: 'date-time',
+                      example: '2022-12-29T12:15:19.041Z',
+                    },
+                    updatedAt: {
+                      type: 'date-time',
+                      example: '2022-12-29T12:15:19.041Z',
+                    },
+                  },
+                },
+              },
+            },
+          },
+          400: {
+            description: 'Error',
+            schema: {
+              properties: {
+                message: {
+                  type: 'string',
+                  example: 'Something went wrong!',
+                },
+              },
+            },
+          },
+        },
       },
       put: {
         tags: ['Projects'],
@@ -1340,6 +1588,86 @@ module.exports = {
             Authentification: [],
           },
         ],
+        parameters: [
+          {
+            in: 'path',
+            name: 'project_id',
+            schema: {
+              type: 'string',
+            },
+            required: true,
+            description: 'The project ID',
+          },
+          {
+            in: 'body',
+            name: 'body',
+            schema: {
+              properties: {
+                name: {
+                  type: 'string',
+                  example: 'NewName',
+                },
+              },
+            },
+          },
+        ],
+        responses: {
+          200: {
+            description: 'Success',
+            schema: {
+              properties: {
+                message: {
+                  type: 'string',
+                  example: 'Project updated!',
+                },
+                data: {
+                  type: 'object',
+                  properties: {
+                    _id: {
+                      type: 'string',
+                      example: '63ad84d7d008827135280989',
+                    },
+                    name: {
+                      type: 'string',
+                      example: 'New',
+                    },
+                    description: {
+                      type: 'string',
+                      example: 'Beautiful project',
+                    },
+                    users: {
+                      type: 'array',
+                      example: [],
+                    },
+                    team: {
+                      type: 'string',
+                      example: '63ad67d4a8b21296142ff048',
+                    },
+                    createdAt: {
+                      type: 'date-time',
+                      example: '2022-12-29T12:15:19.041Z',
+                    },
+                    updatedAt: {
+                      type: 'date-time',
+                      example: '2022-12-29T12:31:15.592Z',
+                    },
+                  },
+                },
+              },
+            },
+          },
+          400: {
+            description: 'Error',
+            schema: {
+              properties: {
+                message: {
+                  type: 'string',
+                  example: 'Something went wrong!',
+                },
+              },
+            },
+          },
+        },
       },
       delete: {
         tags: ['Projects'],
@@ -1350,31 +1678,281 @@ module.exports = {
             Authentification: [],
           },
         ],
+        parameters: [
+          {
+            in: 'path',
+            name: 'project_id',
+            schema: {
+              type: 'string',
+            },
+            required: true,
+            description: 'The project ID',
+          },
+        ],
+        responses: {
+          200: {
+            description: 'Success',
+            schema: {
+              properties: {
+                message: {
+                  type: 'string',
+                  example: 'Project deleted!',
+                },
+              },
+            },
+          },
+          400: {
+            description: 'Error',
+            schema: {
+              properties: {
+                message: {
+                  type: 'string',
+                  example: 'Invalid Request!',
+                },
+              },
+            },
+          },
+        },
       },
     },
     '/project/{project_id}/user/{user_id}': {
       put: {
         tags: ['Projects'],
-        summary: 'Update users in project',
-        description: 'Update users in project',
+        summary: 'Add user in project',
+        description: 'Add user in project',
         security: [
           {
             Authentification: [],
           },
         ],
+        parameters: [
+          {
+            in: 'path',
+            name: 'project_id',
+            schema: {
+              type: 'string',
+            },
+            required: true,
+            description: 'The project ID',
+          },
+          {
+            in: 'path',
+            name: 'user_id',
+            schema: {
+              type: 'string',
+            },
+            required: true,
+            description: 'The user ID',
+          },
+        ],
+        responses: {
+          200: {
+            description: 'Success',
+            schema: {
+              properties: {
+                message: {
+                  type: 'string',
+                  example: 'User added to project!!',
+                },
+              },
+            },
+          },
+          401: {
+            description: 'Error',
+            schema: {
+              properties: {
+                message: {
+                  type: 'string',
+                  example: 'Invalid Request!',
+                },
+              },
+            },
+          },
+          400: {
+            description: 'Error',
+            schema: {
+              properties: {
+                message: {
+                  type: 'string',
+                  example: 'User already in the project!',
+                },
+              },
+            },
+          },
+          404: {
+            description: 'Error',
+            schema: {
+              properties: {
+                message: {
+                  type: 'string',
+                  example: 'Project not found!',
+                },
+              },
+            },
+          },
+        },
+      },
+      delete: {
+        tags: ['Projects'],
+        summary: 'Remove user in project',
+        description: 'Remove user in project',
+        security: [
+          {
+            Authentification: [],
+          },
+        ],
+        parameters: [
+          {
+            in: 'path',
+            name: 'project_id',
+            schema: {
+              type: 'string',
+            },
+            required: true,
+            description: 'The project ID',
+          },
+          {
+            in: 'path',
+            name: 'user_id',
+            schema: {
+              type: 'string',
+            },
+            required: true,
+            description: 'The user ID',
+          },
+        ],
+        responses: {
+          200: {
+            description: 'Success',
+            schema: {
+              properties: {
+                message: {
+                  type: 'string',
+                  example: 'User removed from the project',
+                },
+              },
+            },
+          },
+          401: {
+            description: 'Error',
+            schema: {
+              properties: {
+                message: {
+                  type: 'string',
+                  example: 'Invalid Request!',
+                },
+              },
+            },
+          },
+          404: {
+            description: 'Error',
+            schema: {
+              properties: {
+                message: {
+                  type: 'string',
+                  example: 'User / Project not found!',
+                },
+              },
+            },
+          },
+        },
       },
     },
     '/user/{user_id}/projects': {
       get: {
         tags: ['Projects'],
-        summary: "Get an object with different user's projects informations",
-        description:
-          "Get an object with different user's projects informations",
+        summary: "Get a list with different user's projects informations",
+        description: "Get a list with different user's projects informations",
         security: [
           {
             Authentification: [],
           },
         ],
+        parameters: [
+          {
+            in: 'path',
+            name: 'user_id',
+            schema: {
+              type: 'string',
+            },
+            required: true,
+            description: 'The user ID',
+          },
+        ],
+        responses: {
+          200: {
+            description: 'Success',
+            schema: {
+              type: 'array',
+              items: {
+                type: 'object',
+                properties: {
+                  _id: {
+                    type: 'string',
+                    example: '63ad84d7d008827135280989',
+                  },
+                  name: {
+                    type: 'string',
+                    example: 'New',
+                  },
+                  description: {
+                    type: 'string',
+                    example: 'Beautiful project',
+                  },
+                  users: {
+                    type: 'array',
+                    example: [],
+                  },
+                  team: {
+                    _id: {
+                      type: 'string',
+                      example: '63ad67d4a8b21296142ff048',
+                    },
+                    name: {
+                      type: 'string',
+                      example: 'KEKBody',
+                    },
+                    users: {
+                      type: 'array',
+                      example: [],
+                    },
+                    projects: {
+                      type: 'array',
+                      example: ['63ad84d7d008827135280989'],
+                    },
+                    createdAt: {
+                      type: 'date-time',
+                      example: '2022-12-29T10:11:32.520Z',
+                    },
+                    updatedAt: {
+                      type: 'date-time',
+                      example: '2022-12-29T12:15:19.041Z',
+                    },
+                  },
+                  createdAt: {
+                    type: 'date-time',
+                    example: '2022-12-29T12:15:19.041Z',
+                  },
+                  updatedAt: {
+                    type: 'date-time',
+                    example: '2022-12-29T14:24:12.623Z',
+                  },
+                },
+              },
+            },
+          },
+          400: {
+            description: 'Error',
+            schema: {
+              properties: {
+                message: {
+                  type: 'string',
+                  example: 'Something went wrong!',
+                },
+              },
+            },
+          },
+        },
       },
     },
     // Tasks
