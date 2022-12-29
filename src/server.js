@@ -4,7 +4,6 @@ const cors = require('cors');
 const path = require('path');
 
 const swaggerUI = require('swagger-ui-express');
-const swaggerDoc = require('./docs/swagger');
 
 require('dotenv').config();
 
@@ -57,4 +56,6 @@ mongoose
   .catch((err) => console.log('Could not connect to MongoDB', err));
 
 // Inplement Swagger
+const swaggerDoc = require('./docs/swagger');
+
 app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(swaggerDoc));
