@@ -5,11 +5,11 @@ module.exports = (app) => {
   app.post('/task', authMiddleware, taskCtrl.createTask);
   app.get('/tasks', authMiddleware, taskCtrl.getTasks);
   app.get(
-    '/project/:project_id/tasks',
+    '/project/:projectId/tasks',
     authMiddleware,
     taskCtrl.getTasksByProject
   );
-  app.get('/task/:task_id', authMiddleware, taskCtrl.getOneTask);
-  app.put('/task/:task_id', authMiddleware, taskCtrl.updateTask);
-  app.delete('/task/:task_id', authMiddleware, taskCtrl.deleteTask);
+  app.get('/task/:taskId', authMiddleware, taskCtrl.getOneTask);
+  app.put('/task/:taskId', authMiddleware, taskCtrl.updateTask);
+  app.delete('/task/:taskId', authMiddleware, taskCtrl.deleteTask);
 };
