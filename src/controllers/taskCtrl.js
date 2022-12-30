@@ -1,7 +1,11 @@
 const Task = require('../models/taskModel');
 
 exports.createTask = (req, res) => {
-  const newTask = new Task(req.body);
+  const payload = {
+    ...req.body,
+    reporter: req.userId,
+  };
+  const newTask = new Task(payload);
   newTask
     .save()
     .then(() => res.status(201).json({ message: 'Task Created!', newTask }))
@@ -11,6 +15,16 @@ exports.createTask = (req, res) => {
 exports.getTasks = (_, res) => {
   Task.find()
     .then((tasks) => res.status(200).json({ tasks }))
+    .catch((error) => res.status(400).json({ error }));
+};
+
+exports.getTasksByProject = (req, res) => {
+  const { project_id } = req.params;
+  Task.find({ project: project_id })
+    .populate('project')
+    .then((tasks) => {
+      return res.status(200).json(tasks);
+    })
     .catch((error) => res.status(400).json({ error }));
 };
 

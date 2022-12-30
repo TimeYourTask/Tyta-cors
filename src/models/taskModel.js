@@ -11,6 +11,12 @@ const taskSchema = new Schema(
     description: {
       type: String,
     },
+    status: {
+      type: String,
+      required: true,
+      enum: ['NOT_STARTED', 'IN_PROGRESS', 'DONE'],
+      default: 'NOT_STARTED',
+    },
     assigned: {
       type: Schema.Types.ObjectId,
       ref: 'User',
