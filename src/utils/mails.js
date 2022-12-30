@@ -36,7 +36,7 @@ const welcomeEmail = (email, name) => {
   sendEmail(
     email,
     'Welcome to Time Your Tasks!',
-    `Hi ${name}, welcome to Time Your Tasks!`
+    `Hi ${name ? `${name}` : ''}, welcome to Time Your Tasks!`
   );
 };
 
@@ -52,7 +52,9 @@ const userAddedToProjectEmail = (email, name, project) => {
   sendEmail(
     email,
     'You have been added to a project!',
-    `Hi ${name}, you have been added to the project ${project}.`
+    `Hi ${
+      name ? `${name}` : ''
+    }, you have been added to the project ${project}.`
   );
 };
 
@@ -60,7 +62,7 @@ const userAddedToTeamEmail = (email, name, team) => {
   sendEmail(
     email,
     'You have been added to a team!',
-    `Hi ${name}, you have been added to the team ${team}.`
+    `Hi ${name ? `${name}` : ''}, you have been added to the team ${team}.`
   );
 };
 
@@ -68,7 +70,9 @@ const userRemovedFromProjectEmail = (email, name, project) => {
   sendEmail(
     email,
     'You have been removed from a project!',
-    `Hi ${name}, you have been removed from the project ${project}.`
+    `Hi ${
+      name ? `${name}` : ''
+    }, you have been removed from the project ${project}.`
   );
 };
 
@@ -76,7 +80,7 @@ const userRemovedFromTeamEmail = (email, name, team) => {
   sendEmail(
     email,
     'You have been removed from a team!',
-    `Hi ${name}, you have been removed from the team ${team}.`
+    `Hi ${name ? `${name}` : ''}, you have been removed from the team ${team}.`
   );
 };
 
