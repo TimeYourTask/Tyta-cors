@@ -42,6 +42,7 @@ mongoose
     projectRoute(app);
     taskRoute(app);
     authRoute(app);
+    timeTaskRoute(app);
 
     app.get('/', (req, res) => {
       res.send('Welcome to TimeYourTasks API !');
