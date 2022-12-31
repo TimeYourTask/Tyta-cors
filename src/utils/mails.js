@@ -58,11 +58,13 @@ const userAddedToProjectEmail = (email, name, project) => {
   );
 };
 
-const userAddedToTeamEmail = (email, name, team) => {
+const userAddedToTeamEmail = (user, team) => {
   sendEmail(
-    email,
+    user.email,
     'You have been added to a team!',
-    `Hi ${name ? `${name}` : ''}, you have been added to the team ${team}.`
+    `Hi${user.firstName && ` ${user.firstName}`}${
+      user.lastName && ` ${user.lastName}`
+    }, you have been added to the team ${team}.`
   );
 };
 

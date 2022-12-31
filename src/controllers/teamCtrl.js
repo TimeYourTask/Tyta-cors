@@ -1,4 +1,5 @@
 const Team = require('../models/teamModel');
+const User = require('../models/userModel');
 const {
   userAddedToTeamEmail,
   userRemovedFromTeamEmail,
@@ -79,20 +80,27 @@ exports.addUserToTeam = (req, res) => {
   Team.findById(req.params.teamId)
     .then((team) => {
       if (team) {
-        const user = team.users.find((user) => user.user === req.body.user);
-        if (user) {
+        const isUserExist = team.users.find(
+          (user) => user.user === req.body.user
+        );
+        if (isUserExist) {
           return res.status(400).json({
             message: 'User already in the team',
           });
         }
-        team.users.push(req.body);
-        team
-          .save()
-          .then(() => {
-            userAddedToTeamEmail(user.email, user.firstName, team.name);
-            res.status(200).json({ message: 'User added to team!' });
-          })
-          .catch((error) => res.status(500).json(error));
+        User.findById(req.body.user).then((user) => {
+          team.users.push(req.body);
+          team
+            .save()
+            .then(() => {
+              userAddedToTeamEmail(user, team.name);
+              res.status(200).json({ message: 'User added to team!' });
+            })
+            .catch((error) => {
+              console.log(error);
+              res.status(500).json(error);
+            });
+        });
       } else {
         res.status(404).json({ message: 'Team not found!' });
       }
