@@ -1,9 +1,15 @@
 const taskCtrl = require('../controllers/taskCtrl');
+const { authMiddleware } = require('../middleware/authMiddleware');
 
 module.exports = (app) => {
-  app.post('/task', taskCtrl.createTask);
-  app.get('/tasks', taskCtrl.getTasks);
-  app.get('/task/:task_id', taskCtrl.getOneTask);
-  app.put('/task/:task_id', taskCtrl.updateTask);
-  app.delete('/task/:task_id', taskCtrl.deleteTask);
+  app.post('/task', authMiddleware, taskCtrl.createTask);
+  app.get('/tasks', authMiddleware, taskCtrl.getTasks);
+  app.get(
+    '/project/:projectId/tasks',
+    authMiddleware,
+    taskCtrl.getTasksByProject
+  );
+  app.get('/task/:taskId', authMiddleware, taskCtrl.getOneTask);
+  app.put('/task/:taskId', authMiddleware, taskCtrl.updateTask);
+  app.delete('/task/:taskId', authMiddleware, taskCtrl.deleteTask);
 };

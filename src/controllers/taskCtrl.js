@@ -1,21 +1,33 @@
 const Task = require('../models/taskModel');
 
 exports.createTask = (req, res) => {
-  const newTask = new Task(req.body);
+  const payload = {
+    ...req.body,
+    reporter: req.userId,
+  };
+  const newTask = new Task(payload);
   newTask
     .save()
-    .then(() => res.status(201).json({ message: 'Task Created! :', newTask }))
+    .then(() => res.status(201).json({ message: 'Task Created!', newTask }))
     .catch((error) => res.status(500).json({ error }));
 };
 
-exports.getTasks = (req, res) => {
+exports.getTasks = (_, res) => {
   Task.find()
     .then((tasks) => res.status(200).json({ tasks }))
     .catch((error) => res.status(400).json({ error }));
 };
 
+exports.getTasksByProject = (req, res) => {
+  const { projectId } = req.params;
+  Task.find({ project: projectId })
+    .populate('project')
+    .then((tasks) => res.status(200).json(tasks))
+    .catch((error) => res.status(400).json({ error }));
+};
+
 exports.getOneTask = (req, res) => {
-  Task.findById(req.params.task_id)
+  Task.findById(req.params.taskId)
     .then((task) => {
       if (!task) {
         return res.status(404).json({ message: 'Task not found!' });
@@ -26,7 +38,7 @@ exports.getOneTask = (req, res) => {
 };
 
 exports.deleteTask = (req, res) => {
-  Task.findByIdAndDelete(req.params.task_id)
+  Task.findByIdAndDelete(req.params.taskId)
     .then((task) => {
       if (!task) {
         return res
@@ -42,7 +54,7 @@ exports.deleteTask = (req, res) => {
 
 exports.updateTask = (req, res) => {
   console.log(req.params);
-  Task.findByIdAndUpdate(req.params.task_id, req.body, {
+  Task.findByIdAndUpdate(req.params.taskId, req.body, {
     new: true,
   })
     .then((task) => {

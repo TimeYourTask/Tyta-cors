@@ -11,6 +11,7 @@ const userRoute = require('./routes/userRoute');
 const teamRoute = require('./routes/teamRoute');
 const projectRoute = require('./routes/projectRoute');
 const taskRoute = require('./routes/taskRoute');
+const timeTaskRoute = require('./routes/timeTaskRoute');
 const authRoute = require('./routes/authRoute');
 
 const app = express();
@@ -41,6 +42,7 @@ mongoose
     projectRoute(app);
     taskRoute(app);
     authRoute(app);
+    timeTaskRoute(app);
 
     app.get('/', (req, res) => {
       res.send('Welcome to TimeYourTasks API !');
