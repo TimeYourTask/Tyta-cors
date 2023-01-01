@@ -33,7 +33,7 @@ exports.getUsers = (req, res) => {
 
 exports.getOneUser = (req, res) => {
   User.findById(req.params.userId)
-    .then((user) => res.status(200).json({ user }))
+    .then((user) => res.status(200).json(user))
     .catch((error) => res.status(400).json(error));
 };
 

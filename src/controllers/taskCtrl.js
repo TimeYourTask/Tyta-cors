@@ -14,7 +14,7 @@ exports.createTask = (req, res) => {
 
 exports.getTasks = (_, res) => {
   Task.find()
-    .then((tasks) => res.status(200).json({ tasks }))
+    .then((tasks) => res.status(200).json(tasks))
     .catch((error) => res.status(400).json({ error }));
 };
 
@@ -32,7 +32,7 @@ exports.getOneTask = (req, res) => {
       if (!task) {
         return res.status(404).json({ message: 'Task not found!' });
       }
-      return res.status(200).json({ task });
+      return res.status(200).json(task);
     })
     .catch((error) => res.status(400).json({ error }));
 };
