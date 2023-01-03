@@ -6,6 +6,11 @@ module.exports = (app) => {
   app.get('/admin/projects', authMiddleware, projectCtrl.getAllProjects);
   app.get('/project/:projectId', authMiddleware, projectCtrl.getOneProject);
   app.get(
+    '/project/:projectId/users',
+    authMiddleware,
+    projectCtrl.getUserOfProject
+  );
+  app.get(
     '/user/:userId/projects',
     authMiddleware,
     projectCtrl.getUserProjects

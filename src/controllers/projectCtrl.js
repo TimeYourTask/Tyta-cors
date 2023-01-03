@@ -176,3 +176,15 @@ exports.removeUserFromProject = (req, res) => {
       res.status(401).json({ message: 'Invalid Request!', error })
     );
 };
+
+exports.getUserOfProject = (req, res) => {
+  Project.findById(req.params.projectId)
+    .populate(['users.user'])
+    .then((project) => {
+      const users = project.users.map((users) => users.user);
+      res.status(200).json(users);
+    })
+    .catch((error) =>
+      res.status(404).json({ message: 'Project not found!', error })
+    );
+};
