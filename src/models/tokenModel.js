@@ -19,4 +19,12 @@ const tokenSchema = new Schema({
   },
 });
 
+tokenSchema.set('toJSON', {
+  transform: (doc, ret) => {
+    // eslint-disable-next-line no-underscore-dangle
+    delete ret.__v;
+    return ret;
+  },
+});
+
 module.exports = mongoose.model('Token', tokenSchema);

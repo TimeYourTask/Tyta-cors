@@ -28,6 +28,15 @@ const userSchema = new Schema(
   { timestamps: true }
 );
 
+// remove __v from response
+userSchema.set('toJSON', {
+  transform: (doc, ret) => {
+    // eslint-disable-next-line no-underscore-dangle
+    delete ret.__v;
+    return ret;
+  },
+});
+
 // Pre save to hash password
 userSchema.pre('save', function (next) {
   const user = this;

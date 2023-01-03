@@ -30,4 +30,12 @@ const taskSchema = new Schema(
   }
 );
 
+taskSchema.set('toJSON', {
+  transform: (doc, ret) => {
+    // eslint-disable-next-line no-underscore-dangle
+    delete ret.__v;
+    return ret;
+  },
+});
+
 module.exports = mongoose.model('Task', taskSchema);

@@ -37,7 +37,13 @@ const projectSchema = new Schema(
     timestamps: true,
   }
 );
-
+projectSchema.set('toJSON', {
+  transform: (doc, ret) => {
+    // eslint-disable-next-line no-underscore-dangle
+    delete ret.__v;
+    return ret;
+  },
+});
 projectSchema.pre('remove', function (next) {
   Team.updateOne(
     { id: this.team },

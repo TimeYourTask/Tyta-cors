@@ -34,4 +34,12 @@ const teamSchema = new Schema(
   }
 );
 
+teamSchema.set('toJSON', {
+  transform: (doc, ret) => {
+    // eslint-disable-next-line no-underscore-dangle
+    delete ret.__v;
+    return ret;
+  },
+});
+
 module.exports = mongoose.model('Team', teamSchema);
