@@ -208,3 +208,13 @@ exports.removeProjectFromTeam = (req, res) => {
       res.status(401).json({ message: 'Invalid Request!', error })
     );
 };
+
+exports.getUserOfTeam = (req, res) => {
+  Team.findById(req.params.teamId)
+    .populate(['users.user'])
+    .then((team) => {
+      const users = team.users.map((users) => users.user);
+      res.status(200).json(users);
+    })
+    .catch((error) => res.status(400).json(error));
+};
