@@ -1,4 +1,4 @@
-name: CI-CD
+name: TYTA
 
 on:
     push:
@@ -12,7 +12,7 @@ env:
 
 jobs:
   linting:
-    name: ESLint
+    name: CI - ESLint
     runs-on: ubuntu-latest
     steps:
       - name: Install NodeJS
@@ -30,7 +30,7 @@ jobs:
         run: yarn lint
 
   deploy:
-    name: Fly Deploy
+    name: CD - Fly
     runs-on: ubuntu-latest
     needs: linting
     steps:
