@@ -6,6 +6,29 @@ const Token = require('../models/tokenModel');
 
 const { welcomeEmail, resetPasswordEmail } = require('../utils/mails');
 
+const signUserToken = (userData, user, res) => {
+  jwt.sign(
+    userData,
+    process.env.JWT_KEY,
+    { expiresIn: '30 days' },
+    (error, token) => {
+      if (error) {
+        res.status(500);
+        res.json({ message: 'Can not generate token' });
+      } else {
+        res.status(200);
+        res.json({
+          token,
+          firstName: user.firstName,
+          lastName: user.lastName,
+          email: user.email,
+          id: user.id,
+        });
+      }
+    }
+  );
+};
+
 exports.userRegister = (req, res) => {
   const newUser = new User(req.body);
   // Check if email already exist
@@ -19,7 +42,11 @@ exports.userRegister = (req, res) => {
       .save()
       .then(() => {
         welcomeEmail(newUser.email, newUser.firstName);
-        res.status(201).json({ message: 'User created! :', newUser });
+        signUserToken(
+          { id: newUser.id, email: newUser.email, role: newUser.role },
+          newUser,
+          res
+        );
       })
       .catch((error) => res.status(500).json(error));
   });
@@ -88,26 +115,7 @@ exports.userLogin = async (req, res) => {
     role: user.role,
   };
 
-  jwt.sign(
-    userData,
-    process.env.JWT_KEY,
-    { expiresIn: '30 days' },
-    (error, token) => {
-      if (error) {
-        res.status(500);
-        res.json({ message: 'Can not generate token' });
-      } else {
-        res.status(200);
-        res.json({
-          token,
-          firstName: user.firstName,
-          lastName: user.lastName,
-          email: user.email,
-          id: user.id,
-        });
-      }
-    }
-  );
+  signUserToken(userData, user, res);
 };
 
 exports.resetPassword = async (req, res) => {
