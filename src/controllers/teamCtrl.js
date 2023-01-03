@@ -216,5 +216,7 @@ exports.getUserOfTeam = (req, res) => {
       const users = team.users.map((users) => users.user);
       res.status(200).json(users);
     })
-    .catch((error) => res.status(400).json(error));
+    .catch((error) =>
+      res.status(404).json({ message: 'Team not found!', error })
+    );
 };
