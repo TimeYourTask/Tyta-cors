@@ -1021,6 +1021,53 @@ module.exports = {
         },
       },
     },
+    'team/{team_id}/users/': {
+      get: {
+        tags: ['Teams'],
+        summary: 'Get users list of a team',
+        description: 'Get users list of a team',
+        security: [
+          {
+            Authentification: [],
+          },
+        ],
+        parameters: [
+          {
+            in: 'path',
+            name: 'team_id',
+            schema: {
+              type: 'string',
+            },
+            required: true,
+            description: 'The team ID',
+          },
+        ],
+        responses: {
+          200: {
+            description: 'Success',
+            schema: {
+              properties: {
+                message: {
+                  user: 'array',
+                  example: [],
+                },
+              },
+            },
+          },
+          404: {
+            description: 'Error',
+            schema: {
+              properties: {
+                message: {
+                  type: 'string',
+                  example: 'Team not found!',
+                },
+              },
+            },
+          },
+        },
+      },
+    },
     '/team/{team_id}/user/{user_id}': {
       delete: {
         tags: ['Teams'],
@@ -1709,6 +1756,53 @@ module.exports = {
                   type: 'string',
                   example: 'Invalid Request!',
                 },
+              },
+            },
+          },
+        },
+      },
+    },
+    '/project/{project_id}/users': {
+      get: {
+        tags: ['Projects'],
+        summary: 'Get an user list of project',
+        description: 'Get an user list of project ',
+        security: [
+          {
+            Authentification: [],
+          },
+        ],
+        parameters: [
+          {
+            in: 'path',
+            name: 'project_id',
+            schema: {
+              type: 'string',
+            },
+            required: true,
+            description: 'The project ID',
+          },
+        ],
+        responses: {
+          200: {
+            description: 'Success',
+            schema: {
+              properties: {
+                data: {
+                  type: 'array',
+                  example: [],
+                },
+              },
+            },
+          },
+        },
+        404: {
+          description: 'Error',
+          schema: {
+            properties: {
+              message: {
+                type: 'string',
+                example: 'Project not found!',
               },
             },
           },
