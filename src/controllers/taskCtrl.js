@@ -53,8 +53,7 @@ exports.deleteTask = (req, res) => {
 };
 
 exports.updateTask = (req, res) => {
-  console.log(req.params);
-  Task.findByIdAndUpdate(req.params.taskId, req.body, {
+  Task.findByIdAndUpdate(req.params.task_id, req.body, {
     new: true,
   })
     .then((task) => {
@@ -70,4 +69,13 @@ exports.updateTask = (req, res) => {
     .catch((error) =>
       res.status(401).json({ message: 'Invalid Request!', error })
     );
+};
+
+exports.getUserTasks = async (req, res) => {
+  try {
+    const tasks = await Task.find({ assigned: req.userId });
+    return res.status(200).json(tasks);
+  } catch (error) {
+    return res.status(400).json({ message: 'Something went wrong!' });
+  }
 };
