@@ -41,6 +41,10 @@ module.exports = {
       name: 'Task Time',
       description: 'Manage Task Time',
     },
+    {
+      name: 'Administration',
+      description: 'Requires admin role to access data',
+    },
   ],
   paths: {
     // Authentification
@@ -269,67 +273,6 @@ module.exports = {
       },
     },
     // Users
-    '/users': {
-      get: {
-        tags: ['Users'],
-        summary: 'Get an array of all users of the app',
-        description: 'Get an array of all users of the app',
-        security: [
-          {
-            Authentification: [],
-          },
-        ],
-        responses: {
-          200: {
-            description: 'Success',
-            schema: {
-              type: 'array',
-              items: {
-                type: 'object',
-                properties: {
-                  _id: {
-                    type: 'string',
-                    example: '638d40d05ffcaacee3beabfc',
-                  },
-                  email: {
-                    type: 'string',
-                    example: 'quentin.aubert42@gmail.com',
-                  },
-                  password: {
-                    type: 'string',
-                    example:
-                      '$2b$10$vqczTLEGFdJz2GRQ9TPOveipEfrt/ijwtHGob2Vlg4aGeAlPQFMOS',
-                  },
-                  role: {
-                    type: 'string',
-                    example: 'user',
-                  },
-                  createdAt: {
-                    type: 'date-time',
-                    example: '2022-12-05T00:52:32.150Z',
-                  },
-                  updatedAt: {
-                    type: 'string',
-                    example: '2022-12-05T00:52:32.150Z',
-                  },
-                },
-              },
-            },
-          },
-          400: {
-            description: 'Error',
-            schema: {
-              properties: {
-                message: {
-                  type: 'string',
-                  example: 'Something went wrong!',
-                },
-              },
-            },
-          },
-        },
-      },
-    },
     '/user/{user_id}': {
       get: {
         tags: ['Users'],
@@ -619,66 +562,6 @@ module.exports = {
         },
       },
     },
-    '/teams': {
-      get: {
-        tags: ['Teams'],
-        summary: "Get a list with all Team's Object",
-        description: "Get a list with all Team's Object",
-        security: [
-          {
-            Authentification: [],
-          },
-        ],
-        responses: {
-          200: {
-            description: 'Success',
-            schema: {
-              type: 'array',
-              items: {
-                type: 'object',
-                properties: {
-                  _id: {
-                    type: 'string',
-                    example: '63aadb211811bfa0ca06be70',
-                  },
-                  name: {
-                    type: 'string',
-                    example: 'TimeYourTaskTeam',
-                  },
-                  projects: {
-                    type: 'array',
-                    example: [],
-                  },
-                  users: {
-                    type: 'array',
-                    example: [],
-                  },
-                  createdAt: {
-                    type: 'date-time',
-                    example: '2022-12-27T11:46:41.990Z',
-                  },
-                  updatedAt: {
-                    type: 'date-time',
-                    example: '2022-12-27T11:46:41.990Z',
-                  },
-                },
-              },
-            },
-          },
-          400: {
-            description: 'Error',
-            schema: {
-              properties: {
-                message: {
-                  type: 'string',
-                  example: 'Something went wrong!',
-                },
-              },
-            },
-          },
-        },
-      },
-    },
     '/teams/mine': {
       get: {
         tags: ['Teams'],
@@ -936,7 +819,7 @@ module.exports = {
         },
       },
     },
-    'team/{team_id}/user/': {
+    '/team/{team_id}/user/': {
       put: {
         tags: ['Teams'],
         summary: 'Add an user to a team',
@@ -1021,7 +904,7 @@ module.exports = {
         },
       },
     },
-    'team/{team_id}/users/': {
+    '/team/{team_id}/users/': {
       get: {
         tags: ['Teams'],
         summary: 'Get users list of a team',
@@ -1445,85 +1328,6 @@ module.exports = {
             },
           },
           500: {
-            description: 'Error',
-            schema: {
-              properties: {
-                message: {
-                  type: 'string',
-                  example: 'Something went wrong!',
-                },
-              },
-            },
-          },
-        },
-      },
-    },
-    '/admin/projects': {
-      get: {
-        tags: ['Projects'],
-        summary: 'Get every project where i am administrator',
-        description: 'Get every project where i am administrator',
-        security: [
-          {
-            Authentification: [],
-          },
-        ],
-        responses: {
-          200: {
-            description: 'Success',
-            schema: {
-              properties: {
-                data: {
-                  type: 'object',
-                  properties: {
-                    _id: {
-                      type: 'string',
-                      example: '63ad84d7d008827135280989',
-                    },
-                    name: {
-                      type: 'string',
-                      example: 'Test un beau projet',
-                    },
-                    description: {
-                      type: 'string',
-                      example: 'Beautiful project',
-                    },
-                    users: { type: 'array', example: [] },
-                    team: {
-                      type: 'object',
-                      properties: {
-                        _id: {
-                          type: '',
-                          example: '63ad67d4a8b21296142ff048',
-                        },
-                        name: {
-                          type: '',
-                          example: 'KEKBody',
-                        },
-                        users: {
-                          type: 'array',
-                          example: [],
-                        },
-                        projects: {
-                          type: 'array',
-                          example: ['63ad84d7d008827135280989'],
-                        },
-                      },
-                    },
-                    createdAt: {
-                      type: 'date-time',
-                      example: '2022-12-29T12:15:19.041Z',
-                    },
-                    updatedAt: {
-                      type: 'date-time',
-                      example: '2022-12-29T12:15:19.041Z',
-                    },
-                  },
-                },
-              },
-            },
-          },
-          400: {
             description: 'Error',
             schema: {
               properties: {
@@ -2129,42 +1933,6 @@ module.exports = {
         },
       },
     },
-    '/tasks': {
-      get: {
-        tags: ['Tasks'],
-        summary: "Get a list with all Task's informations",
-        description: "Get a list with all Task's informations",
-        security: [
-          {
-            Authentification: [],
-          },
-        ],
-        responses: {
-          200: {
-            description: 'Success',
-            schema: {
-              properties: {
-                tasks: {
-                  type: 'array',
-                  example: '[]',
-                },
-              },
-            },
-          },
-          400: {
-            description: 'Error',
-            schema: {
-              properties: {
-                message: {
-                  type: 'string',
-                  example: 'Something went wrong!',
-                },
-              },
-            },
-          },
-        },
-      },
-    },
     '/task/{task_id}': {
       get: {
         tags: ['Tasks'],
@@ -2402,42 +2170,6 @@ module.exports = {
       },
     },
     // Task Time
-    '/timers': {
-      get: {
-        tags: ['Task Time'],
-        summary: 'Get timers',
-        description: 'Get timers',
-        security: [
-          {
-            Authentification: [],
-          },
-        ],
-        responses: {
-          200: {
-            description: 'Success',
-            schema: {
-              properties: {
-                TimeTasks: {
-                  type: 'array',
-                  example: '[]',
-                },
-              },
-            },
-          },
-          400: {
-            description: 'Error',
-            schema: {
-              properties: {
-                message: {
-                  type: 'string',
-                  example: 'Something went wrong!',
-                },
-              },
-            },
-          },
-        },
-      },
-    },
     '/task/user/timer': {
       get: {
         tags: ['Task Time'],
@@ -2802,6 +2534,334 @@ module.exports = {
                 message: {
                   type: 'string',
                   example: 'Missing data',
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+    // Admin
+    '/admin/users': {
+      get: {
+        tags: ['Administration'],
+        summary: 'Get an array of all users of the app',
+        description: 'Get an array of all users of the app',
+        security: [
+          {
+            Authentification: [],
+          },
+        ],
+        responses: {
+          200: {
+            description: 'Success',
+            schema: {
+              type: 'array',
+              items: {
+                type: 'object',
+                properties: {
+                  _id: {
+                    type: 'string',
+                    example: '638d40d05ffcaacee3beabfc',
+                  },
+                  email: {
+                    type: 'string',
+                    example: 'quentin.aubert42@gmail.com',
+                  },
+                  password: {
+                    type: 'string',
+                    example:
+                      '$2b$10$vqczTLEGFdJz2GRQ9TPOveipEfrt/ijwtHGob2Vlg4aGeAlPQFMOS',
+                  },
+                  role: {
+                    type: 'string',
+                    example: 'user',
+                  },
+                  createdAt: {
+                    type: 'date-time',
+                    example: '2022-12-05T00:52:32.150Z',
+                  },
+                  updatedAt: {
+                    type: 'string',
+                    example: '2022-12-05T00:52:32.150Z',
+                  },
+                },
+              },
+            },
+          },
+          400: {
+            description: 'Error',
+            schema: {
+              properties: {
+                message: {
+                  type: 'string',
+                  example: 'Something went wrong!',
+                },
+              },
+            },
+          },
+          401: {
+            description: 'Error',
+            schema: {
+              properties: {
+                message: {
+                  type: 'string',
+                  example: 'Access denied!',
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+    '/admin/teams': {
+      get: {
+        tags: ['Administration'],
+        summary: "Get a list with all Team's Object",
+        description: "Get a list with all Team's Object",
+        security: [
+          {
+            Authentification: [],
+          },
+        ],
+        responses: {
+          200: {
+            description: 'Success',
+            schema: {
+              type: 'array',
+              items: {
+                type: 'object',
+                properties: {
+                  _id: {
+                    type: 'string',
+                    example: '63aadb211811bfa0ca06be70',
+                  },
+                  name: {
+                    type: 'string',
+                    example: 'TimeYourTaskTeam',
+                  },
+                  projects: {
+                    type: 'array',
+                    example: [],
+                  },
+                  users: {
+                    type: 'array',
+                    example: [],
+                  },
+                  createdAt: {
+                    type: 'date-time',
+                    example: '2022-12-27T11:46:41.990Z',
+                  },
+                  updatedAt: {
+                    type: 'date-time',
+                    example: '2022-12-27T11:46:41.990Z',
+                  },
+                },
+              },
+            },
+          },
+          400: {
+            description: 'Error',
+            schema: {
+              properties: {
+                message: {
+                  type: 'string',
+                  example: 'Something went wrong!',
+                },
+              },
+            },
+          },
+          401: {
+            description: 'Error',
+            schema: {
+              properties: {
+                message: {
+                  type: 'string',
+                  example: 'Access denied!',
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+    '/admin/projects': {
+      get: {
+        tags: ['Administration'],
+        summary: 'Get every project where i am administrator',
+        description: 'Get every project where i am administrator',
+        security: [
+          {
+            Authentification: [],
+          },
+        ],
+        responses: {
+          200: {
+            description: 'Success',
+            schema: {
+              properties: {
+                data: {
+                  type: 'object',
+                  properties: {
+                    _id: {
+                      type: 'string',
+                      example: '63ad84d7d008827135280989',
+                    },
+                    name: {
+                      type: 'string',
+                      example: 'Test un beau projet',
+                    },
+                    description: {
+                      type: 'string',
+                      example: 'Beautiful project',
+                    },
+                    users: { type: 'array', example: [] },
+                    team: {
+                      type: 'object',
+                      properties: {
+                        _id: {
+                          type: '',
+                          example: '63ad67d4a8b21296142ff048',
+                        },
+                        name: {
+                          type: '',
+                          example: 'KEKBody',
+                        },
+                        users: {
+                          type: 'array',
+                          example: [],
+                        },
+                        projects: {
+                          type: 'array',
+                          example: ['63ad84d7d008827135280989'],
+                        },
+                      },
+                    },
+                    createdAt: {
+                      type: 'date-time',
+                      example: '2022-12-29T12:15:19.041Z',
+                    },
+                    updatedAt: {
+                      type: 'date-time',
+                      example: '2022-12-29T12:15:19.041Z',
+                    },
+                  },
+                },
+              },
+            },
+          },
+          400: {
+            description: 'Error',
+            schema: {
+              properties: {
+                message: {
+                  type: 'string',
+                  example: 'Something went wrong!',
+                },
+              },
+            },
+          },
+          401: {
+            description: 'Error',
+            schema: {
+              properties: {
+                message: {
+                  type: 'string',
+                  example: 'Access denied!',
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+    '/admin/tasks': {
+      get: {
+        tags: ['Administration'],
+        summary: "Get a list with all Task's informations",
+        description: "Get a list with all Task's informations",
+        security: [
+          {
+            Authentification: [],
+          },
+        ],
+        responses: {
+          200: {
+            description: 'Success',
+            schema: {
+              properties: {
+                tasks: {
+                  type: 'array',
+                  example: '[]',
+                },
+              },
+            },
+          },
+          400: {
+            description: 'Error',
+            schema: {
+              properties: {
+                message: {
+                  type: 'string',
+                  example: 'Something went wrong!',
+                },
+              },
+            },
+          },
+          401: {
+            description: 'Error',
+            schema: {
+              properties: {
+                message: {
+                  type: 'string',
+                  example: 'Access denied!',
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+    '/admin/timers': {
+      get: {
+        tags: ['Administration'],
+        summary: 'Get timers',
+        description: 'Get timers',
+        security: [
+          {
+            Authentification: [],
+          },
+        ],
+        responses: {
+          200: {
+            description: 'Success',
+            schema: {
+              properties: {
+                TimeTasks: {
+                  type: 'array',
+                  example: '[]',
+                },
+              },
+            },
+          },
+          400: {
+            description: 'Error',
+            schema: {
+              properties: {
+                message: {
+                  type: 'string',
+                  example: 'Something went wrong!',
+                },
+              },
+            },
+          },
+          401: {
+            description: 'Error',
+            schema: {
+              properties: {
+                message: {
+                  type: 'string',
+                  example: 'Access denied!',
                 },
               },
             },
