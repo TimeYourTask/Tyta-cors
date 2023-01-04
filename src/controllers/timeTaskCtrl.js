@@ -35,14 +35,28 @@ exports.startTimeTask = async (req, res) => {
   let stopRequest = false;
 
   // Check if user have timer started
-  await checkUserTimerRunning(req.userId)
-    .then((timerIsRunning) => {
-      if (timerIsRunning) {
+  await Task.findById(taskId)
+    .then(async (task) => {
+      if (!task) {
         stopRequest = true;
-        res
-          .status(400)
-          .json({ message: 'User cant start two tasks at same time' });
+        return res.status(404).json({ message: 'Task not found' });
       }
+      if (!task.assigned) {
+        stopRequest = true;
+        return res
+          .status(400)
+          .json({ message: "Task doesn't have user assigned" });
+      }
+      await checkUserTimerRunning(task.assigned)
+        .then((timerIsRunning) => {
+          if (timerIsRunning) {
+            stopRequest = true;
+            return res
+              .status(400)
+              .json({ message: 'User cant start two tasks at same time' });
+          }
+        })
+        .catch((error) => res.status(400).json({ error }));
     })
     .catch((error) => res.status(400).json({ error }));
 
@@ -58,11 +72,6 @@ exports.startTimeTask = async (req, res) => {
             if (!task) {
               return res.status(404).json({ message: 'Task not found' });
             }
-            if (!task.assigned) {
-              return res
-                .status(400)
-                .json({ message: "Task doesn't have user assigned" });
-            }
             // Create new timer
             const newTimeTask = new TimeTask({
               task: taskId,
@@ -72,7 +81,9 @@ exports.startTimeTask = async (req, res) => {
             newTimeTask
               .save()
               .then(() =>
-                res.status(201).json({ message: 'Timer created', newTimeTask })
+                res
+                  .status(201)
+                  .json({ message: 'Timer created', result: newTimeTask })
               )
               .catch((error) => res.status(500).json({ error }));
           })
