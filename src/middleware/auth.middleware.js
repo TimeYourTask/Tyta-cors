@@ -12,6 +12,7 @@ exports.authMiddleware = (req, res, next) => {
         res.json({ message: 'Access Forbidden : Invalid Token' });
       } else {
         req.userId = jwt.decode(token).id;
+        req.role = jwt.decode(token).role;
         next();
       }
     });
