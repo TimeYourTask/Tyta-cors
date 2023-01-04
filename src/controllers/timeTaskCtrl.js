@@ -152,34 +152,42 @@ exports.endTimeTask = (req, res) => {
 
 exports.getUserTimeTasks = async (req, res) => {
   TimeTask.findOne({ assigned: req.userId })
-    .sort({ createdAt: -1 })
+    .sort({ updatedAt: -1 })
     .then((timeTask) => {
       if (!timeTask) {
         return res.status(404).json({ message: 'Timer not found' });
       }
-
       let totalTime = 0;
       // eslint-disable-next-line array-callback-return
       timeTask.time.map((timer) => {
+        const startDate = new Date(timer.start_date).getTime();
         if (timer.end_date) {
           const endDate = new Date(timer.end_date).getTime();
-          const startDate = new Date(timer.start_date).getTime();
           const total = endDate - startDate;
           totalTime += total;
+        } else {
+          totalTime += new Date().getTime() - startDate;
         }
       });
 
       // If true, timer is not running
       if (timeTask.time[timeTask.time.length - 1].end_date) {
-        return res
-          .status(200)
-          .json({ total: totalTime, message: 'Timer not started' });
+        return res.status(200).json({
+          task_id: timeTask.task,
+          isRunning: false,
+          total: totalTime,
+          message: 'Timer not started',
+        });
       }
 
-      return res.status(200).json({ total: totalTime, timeTask });
+      return res.status(200).json({
+        task_id: timeTask.task,
+        isRunning: true,
+        total: totalTime,
+        timeTask,
+      });
     })
     .catch((error) => {
-      console.log(error);
       res.status(400).json({ error });
     });
 };
