@@ -27,7 +27,7 @@ exports.getTasksByProject = (req, res) => {
 };
 
 exports.getOneTask = (req, res) => {
-  Task.findById(req.params.taskId)
+  Task.findById(req.params.task_id)
     .then((task) => {
       if (!task) {
         return res.status(404).json({ message: 'Task not found!' });
@@ -38,7 +38,7 @@ exports.getOneTask = (req, res) => {
 };
 
 exports.deleteTask = (req, res) => {
-  Task.findByIdAndDelete(req.params.taskId)
+  Task.findByIdAndDelete(req.params.task_id)
     .then((task) => {
       if (!task) {
         return res
