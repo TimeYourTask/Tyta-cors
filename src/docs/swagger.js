@@ -964,55 +964,6 @@ module.exports = {
           },
         },
       },
-    },
-    '/team/{team_id}/users/': {
-      get: {
-        tags: ['Teams'],
-        summary: 'Get users list of a team',
-        description: 'Get users list of a team',
-        security: [
-          {
-            Authentification: [],
-          },
-        ],
-        parameters: [
-          {
-            in: 'path',
-            name: 'team_id',
-            schema: {
-              type: 'string',
-            },
-            required: true,
-            description: 'The team ID',
-          },
-        ],
-        responses: {
-          200: {
-            description: 'Success',
-            schema: {
-              properties: {
-                message: {
-                  user: 'array',
-                  example: [],
-                },
-              },
-            },
-          },
-          404: {
-            description: 'Error',
-            schema: {
-              properties: {
-                message: {
-                  type: 'string',
-                  example: 'Team not found!',
-                },
-              },
-            },
-          },
-        },
-      },
-    },
-    '/team/{team_id}/user/{user_id}': {
       delete: {
         tags: ['Teams'],
         summary: 'Delete an user from a team',
@@ -1090,11 +1041,11 @@ module.exports = {
         },
       },
     },
-    '/team/{team_id}/project/{project_id}': {
-      put: {
+    '/team/{team_id}/users/': {
+      get: {
         tags: ['Teams'],
-        summary: 'Add a project to a team',
-        description: 'Add a project to a team',
+        summary: 'Get users list of a team',
+        description: 'Get users list of a team',
         security: [
           {
             Authentification: [],
@@ -1110,15 +1061,6 @@ module.exports = {
             required: true,
             description: 'The team ID',
           },
-          {
-            in: 'path',
-            name: 'project_id',
-            schema: {
-              type: 'string',
-            },
-            required: true,
-            description: 'The project ID',
-          },
         ],
         responses: {
           200: {
@@ -1126,19 +1068,8 @@ module.exports = {
             schema: {
               properties: {
                 message: {
-                  type: 'string',
-                  example: 'Project added to team',
-                },
-              },
-            },
-          },
-          400: {
-            description: 'Error',
-            schema: {
-              properties: {
-                message: {
-                  type: 'string',
-                  example: 'Project already in the team',
+                  user: 'array',
+                  example: [],
                 },
               },
             },
@@ -1150,134 +1081,6 @@ module.exports = {
                 message: {
                   type: 'string',
                   example: 'Team not found!',
-                },
-              },
-            },
-          },
-          401: {
-            description: 'Error',
-            schema: {
-              properties: {
-                message: {
-                  type: 'string',
-                  example: 'Invalid Request!',
-                },
-              },
-            },
-          },
-        },
-      },
-      delete: {
-        tags: ['Teams'],
-        summary: 'Delete a project from a team',
-        description: 'Delete a project from a team',
-        security: [
-          {
-            Authentification: [],
-          },
-        ],
-        parameters: [
-          {
-            in: 'path',
-            name: 'team_id',
-            schema: {
-              type: 'string',
-            },
-            required: true,
-            description: 'The team ID',
-          },
-          {
-            in: 'path',
-            name: 'project_id',
-            schema: {
-              type: 'string',
-            },
-            required: true,
-            description: 'The project ID',
-          },
-          {
-            in: 'body',
-            name: 'body',
-            schema: {
-              properties: {
-                projectId: {
-                  type: 'string',
-                  example: '638d40d05ffcaacee3beabfc',
-                },
-              },
-            },
-          },
-        ],
-        responses: {
-          200: {
-            description: 'Success',
-            schema: {
-              properties: {
-                message: {
-                  type: 'string',
-                  example: 'Project removed from the team',
-                },
-                newTeam: {
-                  type: 'object',
-                  properties: {
-                    name: {
-                      type: 'string',
-                      example: 'TimeYourTaskTeam',
-                    },
-                    projects: {
-                      type: 'array',
-                      example: [],
-                    },
-                    _id: {
-                      type: 'string',
-                      example: '63ab12f525d4a913c2f28578',
-                    },
-                    users: {
-                      type: 'array',
-                      example: [],
-                    },
-                    createdAt: {
-                      type: 'date-time',
-                      example: '2022-12-27T15:44:54.004Z',
-                    },
-                    updatedAt: {
-                      type: 'date-time',
-                      example: '2022-12-27T15:44:54.004Z',
-                    },
-                  },
-                },
-              },
-            },
-          },
-          401: {
-            description: 'Error',
-            schema: {
-              properties: {
-                message: {
-                  type: 'string',
-                  example: 'Invalid Request!',
-                },
-              },
-            },
-          },
-          404: {
-            description: 'Error',
-            schema: {
-              properties: {
-                message: {
-                  type: 'string',
-                  example: 'Project / Team not found',
-                },
-              },
-            },
-          },
-          500: {
-            description: 'Error',
-            schema: {
-              properties: {
-                message: {
-                  type: 'string',
-                  example: 'Something went wrong!',
                 },
               },
             },
