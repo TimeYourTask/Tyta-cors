@@ -32,16 +32,19 @@ exports.getTeams = (req, res) => {
 exports.getMyTeams = (req, res) => {
   Team.find({ 'users.user': req.userId })
     .populate(['users.user', 'projects'])
-    .then((teams) => {
-      res.status(200).json(teams);
-    })
+    .then((teams) => res.status(200).json(teams))
     .catch((error) => res.status(400).json(error));
 };
 
 exports.getOneTeam = (req, res) => {
   Team.findById(req.params.teamId)
     .populate(['users.user', 'projects'])
-    .then((team) => res.status(200).json(team))
+    .then((team) => {
+      if (!team) {
+        return res.status(404).json({ message: 'Team not found!' });
+      }
+      return res.status(200).json(team);
+    })
     .catch((error) => res.status(400).json(error));
 };
 
