@@ -479,6 +479,67 @@ module.exports = {
         },
       },
     },
+    '/users': {
+      get: {
+        tags: ['Administration'],
+        summary: 'Get an array of all users of the app',
+        description: 'Get an array of all users of the app',
+        security: [
+          {
+            Authentification: [],
+          },
+        ],
+        responses: {
+          200: {
+            description: 'Success',
+            schema: {
+              type: 'array',
+              items: {
+                type: 'object',
+                properties: {
+                  _id: {
+                    type: 'string',
+                    example: '638d40d05ffcaacee3beabfc',
+                  },
+                  email: {
+                    type: 'string',
+                    example: 'quentin.aubert42@gmail.com',
+                  },
+                  password: {
+                    type: 'string',
+                    example:
+                      '$2b$10$vqczTLEGFdJz2GRQ9TPOveipEfrt/ijwtHGob2Vlg4aGeAlPQFMOS',
+                  },
+                  role: {
+                    type: 'string',
+                    example: 'user',
+                  },
+                  createdAt: {
+                    type: 'date-time',
+                    example: '2022-12-05T00:52:32.150Z',
+                  },
+                  updatedAt: {
+                    type: 'string',
+                    example: '2022-12-05T00:52:32.150Z',
+                  },
+                },
+              },
+            },
+          },
+          400: {
+            description: 'Error',
+            schema: {
+              properties: {
+                message: {
+                  type: 'string',
+                  example: 'Something went wrong!',
+                },
+              },
+            },
+          },
+        },
+      },
+    },
     // Teams
     '/team': {
       post: {
@@ -2542,78 +2603,6 @@ module.exports = {
       },
     },
     // Admin
-    '/admin/users': {
-      get: {
-        tags: ['Administration'],
-        summary: 'Get an array of all users of the app',
-        description: 'Get an array of all users of the app',
-        security: [
-          {
-            Authentification: [],
-          },
-        ],
-        responses: {
-          200: {
-            description: 'Success',
-            schema: {
-              type: 'array',
-              items: {
-                type: 'object',
-                properties: {
-                  _id: {
-                    type: 'string',
-                    example: '638d40d05ffcaacee3beabfc',
-                  },
-                  email: {
-                    type: 'string',
-                    example: 'quentin.aubert42@gmail.com',
-                  },
-                  password: {
-                    type: 'string',
-                    example:
-                      '$2b$10$vqczTLEGFdJz2GRQ9TPOveipEfrt/ijwtHGob2Vlg4aGeAlPQFMOS',
-                  },
-                  role: {
-                    type: 'string',
-                    example: 'user',
-                  },
-                  createdAt: {
-                    type: 'date-time',
-                    example: '2022-12-05T00:52:32.150Z',
-                  },
-                  updatedAt: {
-                    type: 'string',
-                    example: '2022-12-05T00:52:32.150Z',
-                  },
-                },
-              },
-            },
-          },
-          400: {
-            description: 'Error',
-            schema: {
-              properties: {
-                message: {
-                  type: 'string',
-                  example: 'Something went wrong!',
-                },
-              },
-            },
-          },
-          401: {
-            description: 'Error',
-            schema: {
-              properties: {
-                message: {
-                  type: 'string',
-                  example: 'Access denied!',
-                },
-              },
-            },
-          },
-        },
-      },
-    },
     '/admin/teams': {
       get: {
         tags: ['Administration'],
