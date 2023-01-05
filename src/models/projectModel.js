@@ -1,7 +1,8 @@
 const mongoose = require('mongoose');
 
-const { Schema } = mongoose;
+const { ROLES } = require('../config/global');
 
+const { Schema } = mongoose;
 const { Team, Task } = mongoose.models;
 
 const projectSchema = new Schema(
@@ -37,6 +38,7 @@ const projectSchema = new Schema(
     timestamps: true,
   }
 );
+
 projectSchema.set('toJSON', {
   transform: (doc, ret) => {
     // eslint-disable-next-line no-underscore-dangle
@@ -44,6 +46,24 @@ projectSchema.set('toJSON', {
     return ret;
   },
 });
+
+projectSchema.pre('findOneAndDelete', async function (next, req) {
+  // eslint-disable-next-line no-underscore-dangle
+  const projectId = this._conditions._id;
+  await mongoose.models.Project.findById(projectId).then((project) => {
+    if (project) {
+      const isUserInTeamAndAdmin = project.users.some(
+        (user) => user.user.id === req.userId && user.role === 'admin'
+      );
+      if (!isUserInTeamAndAdmin && req.role !== ROLES.admin) {
+        return next(new Error('Access denied!'));
+      }
+    }
+  });
+
+  next();
+});
+
 projectSchema.pre('remove', function (next) {
   Team.updateOne(
     { id: this.team },
