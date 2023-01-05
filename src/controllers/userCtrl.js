@@ -97,7 +97,9 @@ exports.updateUser = (req, res) => {
 };
 
 exports.userLogin = async (req, res) => {
-  const user = await User.findOne({ email: req.body.email });
+  const user = await User.findOne({ email: req.body.email }).select(
+    '+password'
+  );
   if (!user) {
     res.status(500).json({ message: 'User not exist' });
     return;

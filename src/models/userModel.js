@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
+const { ROLES } = require('../config/global');
 
 const { Schema } = mongoose;
 
@@ -7,12 +8,21 @@ const userSchema = new Schema(
   {
     email: {
       type: String,
-      required: true,
-      unique: true,
+      unique: [true, 'Email already exists in database!'],
+      lowercase: true,
+      trim: true,
+      required: [true, 'Email not provided'],
+      validate: {
+        validator(v) {
+          return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
+        },
+        message: '{VALUE} is not a valid email!',
+      },
     },
     password: {
       type: String,
       required: true,
+      select: false,
     },
     firstName: {
       type: String,
@@ -21,8 +31,9 @@ const userSchema = new Schema(
       type: String,
     },
     role: {
-      type: String,
-      default: 'user',
+      type: Number,
+      enum: ROLES,
+      default: ROLES.user,
     },
   },
   { timestamps: true }
