@@ -122,9 +122,9 @@ exports.addUserToTeam = (req, res) => {
       }
 
       const isUserExist = team.users.find(
-        (user) => user.user === req.body.user
+        (user) => user.user.toString() === req.body.user
       );
-      if (!isUserExist) {
+      if (isUserExist) {
         return res.status(400).json({
           message: 'User already in the team',
         });
