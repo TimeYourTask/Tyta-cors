@@ -481,7 +481,7 @@ module.exports = {
     },
     '/users': {
       get: {
-        tags: ['Administration'],
+        tags: ['Users'],
         summary: 'Get an array of all users of the app',
         description: 'Get an array of all users of the app',
         security: [
