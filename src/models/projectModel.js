@@ -1,3 +1,4 @@
+/* eslint-disable no-underscore-dangle */
 const mongoose = require('mongoose');
 
 const { ROLES } = require('../config/global');
@@ -41,25 +42,28 @@ const projectSchema = new Schema(
 
 projectSchema.set('toJSON', {
   transform: (doc, ret) => {
-    // eslint-disable-next-line no-underscore-dangle
     delete ret.__v;
     return ret;
   },
 });
 
-projectSchema.pre('findOneAndDelete', async function (next, req) {
-  // eslint-disable-next-line no-underscore-dangle
-  const projectId = this._conditions._id;
-  await mongoose.models.Project.findById(projectId).then((project) => {
+projectSchema.pre('findOneAndDelete', async function (next) {
+  const {
+    _id: { _id, req },
+  } = this._conditions;
+
+  await mongoose.models.Project.findById(_id).then((project) => {
     if (project) {
-      const isUserInTeamAndAdmin = project.users.some(
-        (user) => user.user.id === req.userId && user.role === 'admin'
+      const isUserInProjectAndAdmin = project.users.some(
+        (user) => user.user.toString() === req.userId && user.role === 'admin'
       );
-      if (!isUserInTeamAndAdmin && req.role !== ROLES.admin) {
+      if (!isUserInProjectAndAdmin && req.role !== ROLES.admin) {
         return next(new Error('Access denied!'));
       }
     }
   });
+
+  this._conditions = { _id };
 
   next();
 });

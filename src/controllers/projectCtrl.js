@@ -69,10 +69,7 @@ exports.getOneProject = (req, res) => {
 
       return res.status(200).json(project);
     })
-    .catch((error) => {
-      console.log(error);
-      return res.status(400).json(error);
-    });
+    .catch((error) => res.status(400).json(error));
 };
 
 exports.getUserProjects = (req, res) => {
@@ -86,12 +83,16 @@ exports.getUserProjects = (req, res) => {
 };
 
 exports.deleteProject = (req, res) => {
-  Project.findByIdAndDelete(req.params.projectId)
+  const { projectId } = req.params;
+
+  // Pass object in delete request to let mongoose pre hook access to request data
+  Project.findByIdAndDelete({ _id: projectId, req })
     .then((project) => {
-      if (!project)
-        res
+      if (!project) {
+        return res
           .status(400)
           .json({ message: 'No item deleted: project not found!' });
+      }
 
       return res.status(200).json({ message: 'Project deleted!' });
     })
