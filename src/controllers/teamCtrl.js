@@ -80,11 +80,8 @@ exports.deleteTeam = (req, res) => {
 
 exports.updateTeamName = (req, res) => {
   const { teamId } = req.params;
-  const payload = {
-    name: req.body.name,
-  };
 
-  Team.findByIdAndUpdate(teamId, payload, {
+  Team.findByIdAndUpdate(teamId, req.body, {
     new: true,
     upsert: true,
   })
