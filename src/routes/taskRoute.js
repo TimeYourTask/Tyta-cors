@@ -25,7 +25,7 @@ module.exports = (app) => {
   app.put('/task/:task_id', authMiddleware, taskCtrl.updateTask);
 
   // Delete a task
-  app.delete('/task/:task_id', authMiddleware, taskCtrl.deleteTask);
+  app.delete('/task/:taskId', authMiddleware, taskCtrl.deleteTask);
 
   /**
    * Admin routes

@@ -1,4 +1,6 @@
+/* eslint-disable no-underscore-dangle */
 const mongoose = require('mongoose');
+const { ROLES } = require('../config/global');
 
 const { Schema } = mongoose;
 
@@ -42,6 +44,28 @@ taskSchema.set('toJSON', {
     delete ret.__v;
     return ret;
   },
+});
+
+taskSchema.pre('findOneAndDelete', async function (next) {
+  const {
+    _id: { _id, req },
+  } = this._conditions;
+
+  await mongoose.models.Task.findById(_id).then(async (task) => {
+    if (task) {
+      const isUserInProject = await mongoose.models.Project.find({
+        _id: task.project,
+        'users.user': req.userId,
+      });
+      if (isUserInProject.length === 0 && req.role !== ROLES.admin) {
+        return next(new Error('Access denied!'));
+      }
+    }
+  });
+
+  this._conditions = { _id };
+
+  next();
 });
 
 module.exports = mongoose.model('Task', taskSchema);
