@@ -263,7 +263,7 @@ exports.getUserOfTeam = (req, res) => {
   Team.findById(req.params.teamId)
     .populate(['users.user'])
     .then((team) => {
-      if (team) {
+      if (!team) {
         return res
           .status(404)
           .json({ message: 'No user found for this team!' });
