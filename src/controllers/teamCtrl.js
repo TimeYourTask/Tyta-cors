@@ -271,7 +271,7 @@ exports.getUserOfTeam = (req, res) => {
 
       // Blocks users who want to access other users without being admin
       const isUserInTeam = team.users.some(
-        (user) => user.user.toString() === req.userId
+        (user) => user.user.id.toString() === req.userId
       );
       if (!isUserInTeam && req.role !== ROLES.admin) {
         return res.status(401).json({ message: 'Access denied!' });
