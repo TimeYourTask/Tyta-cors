@@ -1,3 +1,4 @@
+const { ROLES } = require('../config/global');
 const Team = require('../models/teamModel');
 const User = require('../models/userModel');
 const {
@@ -20,7 +21,7 @@ exports.createTeam = async (req, res) => {
 };
 
 exports.getTeams = (req, res) => {
-  // get teams and replace user by full user
+  // Get teams and replace user by full user
   Team.find()
     .populate(['users.user', 'projects'])
     .then((teams) => {
@@ -37,32 +38,63 @@ exports.getMyTeams = (req, res) => {
 };
 
 exports.getOneTeam = (req, res) => {
-  Team.findById(req.params.teamId)
+  const { teamId } = req.params;
+  Team.findById(teamId)
     .populate(['users.user', 'projects'])
     .then((team) => {
       if (!team) {
         return res.status(404).json({ message: 'Team not found!' });
       }
+
+      const isUserInTeam = team.users.some(
+        (user) => user.user.id === req.userId
+      );
+      if (!isUserInTeam && req.role !== ROLES.admin) {
+        return res.status(401).json({ message: 'Access denied!' });
+      }
+
       return res.status(200).json(team);
     })
     .catch((error) => res.status(400).json(error));
 };
 
 exports.deleteTeam = (req, res) => {
-  Team.findByIdAndDelete(req.params.teamId)
-    .then(() => res.status(200).json({ message: 'Team deleted!' }))
-    .catch((error) =>
-      res.status(400).json({ message: 'Invalid Request!', error })
-    );
+  const { teamId } = req.params;
+  Team.findByIdAndDelete({ _id: teamId, req })
+    .then((team) => {
+      if (!team) {
+        return res
+          .status(400)
+          .json({ message: 'No item deleted: team not found!' });
+      }
+
+      return res.status(200).json({ message: 'Team deleted!' });
+    })
+    .catch((error) => {
+      if (error.message === 'Access denied!') {
+        return res.status(400).json({ message: 'Access denied!' });
+      }
+      return res.status(400).json({ message: 'Invalid Request!', error });
+    });
 };
 
 exports.updateTeamName = (req, res) => {
-  Team.findByIdAndUpdate(req.params.teamId, req.body, {
+  const { teamId } = req.params;
+
+  Team.findByIdAndUpdate(teamId, req.body, {
     new: true,
     upsert: true,
   })
     .then((team) => {
-      res
+      // Blocks users who want to access other users without being admin
+      const isUserInTeam = team.users.some(
+        (user) => user.user.toString() === req.userId && user.role === 'admin'
+      );
+      if (!isUserInTeam && req.role !== ROLES.admin) {
+        return res.status(401).json({ message: 'Access denied!' });
+      }
+
+      return res
         .status(200)
         .json({ message: 'The team has been modified correclty!', team });
     })
@@ -72,71 +104,86 @@ exports.updateTeamName = (req, res) => {
 };
 
 exports.addUserToTeam = (req, res) => {
-  // check if user not in the team
   Team.findById(req.params.teamId)
     .then((team) => {
-      if (team) {
-        const isUserExist = team.users.find(
-          (user) => user.user === req.body.user
-        );
-        if (isUserExist) {
-          return res.status(400).json({
-            message: 'User already in the team',
-          });
-        }
-        User.findById(req.body.user).then((user) => {
-          team.users.push(req.body);
-          team
-            .save()
-            .then(() => {
-              userAddedToTeamEmail(user, team.name);
-              res.status(200).json({ message: 'User added to team!' });
-            })
-            .catch((error) => {
-              console.log(error);
-              res.status(500).json(error);
-            });
-        });
-      } else {
-        res.status(404).json({ message: 'Team not found!' });
+      if (!team) {
+        return res.status(404).json({ message: 'Team not found!' });
       }
+
+      // Blocks users who want to access other users without being admin
+      const isUserInTeam = team.users.some(
+        (user) => user.user.toString() === req.userId && user.role === 'admin'
+      );
+      if (!isUserInTeam && req.role !== ROLES.admin) {
+        return res.status(401).json({ message: 'Access denied!' });
+      }
+
+      const isUserExist = team.users.find(
+        (user) => user.user.toString() === req.body.user
+      );
+      if (isUserExist) {
+        return res.status(400).json({
+          message: 'User already in the team',
+        });
+      }
+
+      User.findById(req.body.user).then((user) => {
+        team.users.push(req.body);
+        team
+          .save()
+          .then(() => {
+            userAddedToTeamEmail(user, team.name);
+            res.status(200).json({ message: 'User added to team!' });
+          })
+          .catch((error) => {
+            console.log(error);
+            res.status(500).json(error);
+          });
+      });
     })
     .catch((error) => res.status(500).json(error));
 };
 
 exports.removeUserFromTeam = (req, res) => {
-  // check if user in team
   Team.findById(req.params.teamId)
     .then((team) => {
-      if (team) {
-        const user = team.users.find(
-          (user) => user.user.toString() === req.body.user
-        );
-        if (user) {
-          // remove user from team
-          team.users = team.users.filter(
-            (user) => user.user.toString() !== req.body.user
-          );
-          team
-            .save()
-            .then((newTeam) => {
-              userRemovedFromTeamEmail(user.email, user.firstName, team.name);
-              res.status(200).json({
-                message: 'User removed from the team',
-                newTeam,
-              });
-            })
-            .catch((error) => res.status(500).json(error));
-        } else {
-          res.status(404).json({
-            message: 'User not found in team!',
-          });
-        }
-      } else {
-        res.status(404).json({
+      if (!team) {
+        return res.status(404).json({
           message: 'Team not found!',
         });
       }
+
+      // Blocks users who want to access other users without being admin
+      const isUserInTeam = team.users.some(
+        (user) => user.user.toString() === req.userId && user.role === 'admin'
+      );
+      if (!isUserInTeam && req.role !== ROLES.admin) {
+        return res.status(401).json({ message: 'Access denied!' });
+      }
+
+      const user = team.users.find(
+        (user) => user.user.toString() === req.body.user
+      );
+      if (!user) {
+        return res.status(404).json({
+          message: 'User not found in team!',
+        });
+      }
+
+      team.users = team.users.filter(
+        (user) => user.user.toString() !== req.body.user
+      );
+
+      return team
+        .save()
+        .then((newTeam) => {
+          userRemovedFromTeamEmail(user.email, user.firstName, team.name);
+          res.status(200).json({
+            message: 'User removed from the team',
+            newTeam,
+          });
+        })
+        .catch((error) => res.status(500).json(error));
     })
     .catch((error) =>
       res.status(401).json({ message: 'Invalid Request!', error })
@@ -216,10 +263,24 @@ exports.getUserOfTeam = (req, res) => {
   Team.findById(req.params.teamId)
     .populate(['users.user'])
     .then((team) => {
+      if (!team) {
+        return res
+          .status(404)
+          .json({ message: 'No user found for this team!' });
+      }
+
+      // Blocks users who want to access other users without being admin
+      const isUserInTeam = team.users.some(
+        (user) => user.user.id.toString() === req.userId
+      );
+      if (!isUserInTeam && req.role !== ROLES.admin) {
+        return res.status(401).json({ message: 'Access denied!' });
+      }
+
       const users = team.users.map((users) => users.user);
-      res.status(200).json(users);
+      return res.status(200).json(users);
     })
     .catch((error) =>
-      res.status(404).json({ message: 'Team not found!', error })
+      res.status(401).json({ message: 'Invalid Request!', error })
     );
 };

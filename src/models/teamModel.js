@@ -1,4 +1,6 @@
+/* eslint-disable no-underscore-dangle */
 const mongoose = require('mongoose');
+const { ROLES } = require('../config/global');
 
 const { Schema } = mongoose;
 
@@ -36,10 +38,28 @@ const teamSchema = new Schema(
 
 teamSchema.set('toJSON', {
   transform: (doc, ret) => {
-    // eslint-disable-next-line no-underscore-dangle
     delete ret.__v;
     return ret;
   },
+});
+
+teamSchema.pre('findOneAndDelete', async function (next) {
+  const {
+    _id: { _id, req },
+  } = this._conditions;
+
+  await mongoose.models.Team.findById(_id).then((team) => {
+    if (team) {
+      const isUserInTeamAndAdmin = team.users.some(
+        (user) => user.user.toString() === req.userId && user.role === 'admin'
+      );
+      if (!isUserInTeamAndAdmin && req.role !== ROLES.admin) {
+        return next(new Error('Access denied!'));
+      }
+    }
+  });
+
+  next();
 });
 
 module.exports = mongoose.model('Team', teamSchema);
